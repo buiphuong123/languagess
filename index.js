@@ -1,5 +1,4 @@
 const express = require('express');
-const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
@@ -19,7 +18,8 @@ const firebaseConfig = {
 
 
 
-dotenv.config();
+  require('dotenv').config();
+
 
 // import cac models
 const app = express();
