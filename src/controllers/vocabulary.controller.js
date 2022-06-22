@@ -1,4 +1,3 @@
-const { not } = require('cheerio/lib/api/traversing');
 const Vocabulary = require('../models/vocabulary/vocabulary.model');
 const nodemailer = require("nodemailer");
 const User = require('../models/user.model');

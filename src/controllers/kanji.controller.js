@@ -1,7 +1,5 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-const { html } = require('cheerio/lib/static');
-const { response } = require('express');
 const request = require('request');
 const Kanji = require('../models/kanji/kanji.model');
 const User = require('../models/user.model');
