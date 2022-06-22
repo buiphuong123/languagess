@@ -1,5 +1,5 @@
 const axios = require('axios');
-const cheerio = require('cheerio');
+// const cheerio = require('cheerio');
 const request = require('request');
 const Kanji = require('../models/kanji/kanji.model');
 const User = require('../models/user.model');
@@ -266,181 +266,181 @@ const setLessionKanji = async (req, res) => {
     console.log('ket thuc');
 }
 
-const dataExplain = async (req, res) => {
-    var ss = [];
-    var array = [];
-    var value = "";
+// const dataExplain = async (req, res) => {
+//     var ss = [];
+//     var array = [];
+//     var value = "";
 
-    request('https://jls.vnjpclub.com/kanji-look-and-learn-bai-32.html', (error, response, html) => {
-        if (!error && response.statusCode === 200) {
-            const $ = cheerio.load(html);
-            $('td').each(async (i, el) => {
+//     request('https://jls.vnjpclub.com/kanji-look-and-learn-bai-32.html', (error, response, html) => {
+//         if (!error && response.statusCode === 200) {
+//             const $ = cheerio.load(html);
+//             $('td').each(async (i, el) => {
 
-                const title = $(el)
-                    .find('center span')
-                    .text()
-                var a = {};
-                if (title !== "") {
-                    value = title;
-                }
-                var elems = $(el).filter(function () {
-                    return $(this).css('padding-right') == '50px';
+//                 const title = $(el)
+//                     .find('center span')
+//                     .text()
+//                 var a = {};
+//                 if (title !== "") {
+//                     value = title;
+//                 }
+//                 var elems = $(el).filter(function () {
+//                     return $(this).css('padding-right') == '50px';
 
-                });
-                // console.log(elems.html() );
-                if (elems.html() !== null) {
+//                 });
+//                 // console.log(elems.html() );
+//                 if (elems.html() !== null) {
 
-                    var str1 = elems.html().replaceAll("<font size=\"4\">", "sss ");
-                    var str2 = str1.replaceAll("</font>", "mmm");
-                    ss = str2.split(/sss|mmm/);
+//                     var str1 = elems.html().replaceAll("<font size=\"4\">", "sss ");
+//                     var str2 = str1.replaceAll("</font>", "mmm");
+//                     ss = str2.split(/sss|mmm/);
 
-                    a.explain = ss[2];
-                    const kanjiFind = await Kanji.findOne({ kanji: value });
-                    if (kanjiFind) {
-                        a.kanji = kanjiFind.kanji;
-                        array.push(a);
-                        console.log('push success');
-                        for (var i = 0; i < array.length; i++) {
-                            const kk = await Kanji.findOne({ kanji: array[i].kanji });
-                            if (kk) {
-                                kk.explain = array[i].explain;
-                                await kk.save();
-                                console.log('save success');
-                            }
-                            else {
-                                console.log('khong tim thay');
-                            }
-                        }
-
-
-                    }
-                    else {
-                        console.log('khong tim thay');
-                    }
-                    // array.push(a);
-                    // console.log('ARAY LA', array);
-                    // console.log('trc khi set cai khac tach chuoi ne ', kanjiFind);
-
-                    // console.log(kanjiFind, 'sau khi set them explain');
-                }
-                else {
-
-                }
-                // console.log(array);
-
-            })
-        }
-        else {
-            console.log(error);
-        }
+//                     a.explain = ss[2];
+//                     const kanjiFind = await Kanji.findOne({ kanji: value });
+//                     if (kanjiFind) {
+//                         a.kanji = kanjiFind.kanji;
+//                         array.push(a);
+//                         console.log('push success');
+//                         for (var i = 0; i < array.length; i++) {
+//                             const kk = await Kanji.findOne({ kanji: array[i].kanji });
+//                             if (kk) {
+//                                 kk.explain = array[i].explain;
+//                                 await kk.save();
+//                                 console.log('save success');
+//                             }
+//                             else {
+//                                 console.log('khong tim thay');
+//                             }
+//                         }
 
 
-    })
-    if (array.length !== 0) {
-        console.log(array);
-    }
+//                     }
+//                     else {
+//                         console.log('khong tim thay');
+//                     }
+//                     // array.push(a);
+//                     // console.log('ARAY LA', array);
+//                     // console.log('trc khi set cai khac tach chuoi ne ', kanjiFind);
 
-}
-const dataImage = async (req, res) => {
-    request('https://jls.vnjpclub.com/kanji-look-and-learn-bai-32.html', (error, response, html) => {
-        if (!error && response.statusCode === 200) {
-            const $ = cheerio.load(html);
-            $('table').each(async (i, el) => {
-                const title = $(el)
-                    .find('tbody tr td center span')
-                    .text();
-                const kanjiFind = await Kanji.findOne({ kanji: title });
-                if (kanjiFind) {
-                    // console.log('tim thay ', kanjiFind);
-                    const image = $(el)
-                        .find('tbody tr td img')
-                        .attr('src');
-                    kanjiFind.image = 'https://jls.vnjpclub.com/' + image;
-                    await kanjiFind.save();
-                    console.log('success');
-                }
-                else {
-                    console.log('khong tim thay');
-                }
-                // const image = $(el)
-                // .find('tbody tr td img')
-                // .attr('src');
-                // var ss= [];
+//                     // console.log(kanjiFind, 'sau khi set them explain');
+//                 }
+//                 else {
 
-                // var elems = $(el).filter(function(){
-                //             return $(this).css('padding-right') == '50px';
+//                 }
+//                 // console.log(array);
 
-                //        });
-                //        if(elems.html() === null) {
-
-                //        }
-                //        else {
-                //             var str1 = elems.html().replaceAll("<font size=\"4\">" , "sss ");
-                //             var str2 = str1.replaceAll("</font>", "mmm");
-                //             ss = str2.split(/sss|mmm/);
-
-                //        }
-
-                //    console.log(title, image, ss[2]);
-                // console.log(title, image);
-            })
-
-            // lay link image
-            // $('table').each((i, el) => {
-            // const title = $(el)
-            // .find('tbody tr td img')
-            // .attr('src');
-            //     // return res.json(title);
-            //     console.log('https://jls.vnjpclub.com/'+title);
-            // })
+//             })
+//         }
+//         else {
+//             console.log(error);
+//         }
 
 
-            // lay explain
-            // $('td').each((i, el) => {
-            //     var elems = $(el).filter(function(){
-            //         return $(this).css('padding-right') == '50px';
+//     })
+//     if (array.length !== 0) {
+//         console.log(array);
+//     }
 
-            //    });
-            //    if(elems.html() === null) {
+// }
+// const dataImage = async (req, res) => {
+//     request('https://jls.vnjpclub.com/kanji-look-and-learn-bai-32.html', (error, response, html) => {
+//         if (!error && response.statusCode === 200) {
+//             const $ = cheerio.load(html);
+//             $('table').each(async (i, el) => {
+//                 const title = $(el)
+//                     .find('tbody tr td center span')
+//                     .text();
+//                 const kanjiFind = await Kanji.findOne({ kanji: title });
+//                 if (kanjiFind) {
+//                     // console.log('tim thay ', kanjiFind);
+//                     const image = $(el)
+//                         .find('tbody tr td img')
+//                         .attr('src');
+//                     kanjiFind.image = 'https://jls.vnjpclub.com/' + image;
+//                     await kanjiFind.save();
+//                     console.log('success');
+//                 }
+//                 else {
+//                     console.log('khong tim thay');
+//                 }
+//                 // const image = $(el)
+//                 // .find('tbody tr td img')
+//                 // .attr('src');
+//                 // var ss= [];
 
-            //    }
-            //    else {
-            //         var str1 = elems.html().replaceAll("<font size=\"4\">" , "sss ");
-            //         var str2 = str1.replaceAll("</font>", "mmm");
-            //         var ss = str2.split(/sss|mmm/);
-            //         console.log(ss[2]);
-            //    }
+//                 // var elems = $(el).filter(function(){
+//                 //             return $(this).css('padding-right') == '50px';
 
-            // })
+//                 //        });
+//                 //        if(elems.html() === null) {
 
-            //    const kaka =  $('table td:[style="padding-right:50px"]').text();
-            //     console.log(kaka);
+//                 //        }
+//                 //        else {
+//                 //             var str1 = elems.html().replaceAll("<font size=\"4\">" , "sss ");
+//                 //             var str2 = str1.replaceAll("</font>", "mmm");
+//                 //             ss = str2.split(/sss|mmm/);
 
+//                 //        }
 
-            //     var elems = $('td').filter(function(){
-            //          return $(this).css('padding-right') == '50px';
+//                 //    console.log(title, image, ss[2]);
+//                 // console.log(title, image);
+//             })
 
-            //     });
-            //     var str1 = elems.html().replaceAll("<font size=\"4\">" , "sss ");
-            //     var str2 = str1.replaceAll("</font>", "mmm");
-            //     var ss = str2.split(/sss|mmm/);
-            // return res.json( ss); // returns just "test"
-
-
-
-            // lay chu kanji
-            // $('table').each((i, el) => {
-            //     const title = $(el)
-            //     .find('tbody tr td center span')
-            //     .text();
-            //     // return res.json(title);
-            //     console.log(title);
-            // })
-        }
-    })
+//             // lay link image
+//             // $('table').each((i, el) => {
+//             // const title = $(el)
+//             // .find('tbody tr td img')
+//             // .attr('src');
+//             //     // return res.json(title);
+//             //     console.log('https://jls.vnjpclub.com/'+title);
+//             // })
 
 
-}
+//             // lay explain
+//             // $('td').each((i, el) => {
+//             //     var elems = $(el).filter(function(){
+//             //         return $(this).css('padding-right') == '50px';
+
+//             //    });
+//             //    if(elems.html() === null) {
+
+//             //    }
+//             //    else {
+//             //         var str1 = elems.html().replaceAll("<font size=\"4\">" , "sss ");
+//             //         var str2 = str1.replaceAll("</font>", "mmm");
+//             //         var ss = str2.split(/sss|mmm/);
+//             //         console.log(ss[2]);
+//             //    }
+
+//             // })
+
+//             //    const kaka =  $('table td:[style="padding-right:50px"]').text();
+//             //     console.log(kaka);
+
+
+//             //     var elems = $('td').filter(function(){
+//             //          return $(this).css('padding-right') == '50px';
+
+//             //     });
+//             //     var str1 = elems.html().replaceAll("<font size=\"4\">" , "sss ");
+//             //     var str2 = str1.replaceAll("</font>", "mmm");
+//             //     var ss = str2.split(/sss|mmm/);
+//             // return res.json( ss); // returns just "test"
+
+
+
+//             // lay chu kanji
+//             // $('table').each((i, el) => {
+//             //     const title = $(el)
+//             //     .find('tbody tr td center span')
+//             //     .text();
+//             //     // return res.json(title);
+//             //     console.log(title);
+//             // })
+//         }
+//     })
+
+
+// }
 
 const createKanjiComment = async (req, res) => {
     const { kanji_id, user_id, content, requ} = req.body;

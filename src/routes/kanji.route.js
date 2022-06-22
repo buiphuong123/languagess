@@ -3,8 +3,8 @@ const router = express.Router()
 const kanjiController = require('../controllers/kanji.controller');
 
 router.get('/dataKanji', kanjiController.dataKanji)
-router.get('/dataImage', kanjiController.dataImage)
-router.get('/dataExplain', kanjiController.dataExplain)
+// router.get('/dataImage', kanjiController.dataImage)
+// router.get('/dataExplain', kanjiController.dataExplain)
 router.post('/getKanji', kanjiController.getKanji)
 router.post('/createMemKanji', kanjiController.createMemKanji)
 router.post('/createLikeKanji', kanjiController.createLikeKanji)
