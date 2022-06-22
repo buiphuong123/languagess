@@ -128,7 +128,6 @@ mongoose.set('useCreateIndex', true);
 
 server.listen(process.env.PORT || 3002);
 
-
 // const ioo = require('socket.io-client');
 // const socket = ioo("http://192.168.1.72:3002");
 // module.exports.socket = socket;

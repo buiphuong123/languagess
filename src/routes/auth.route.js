@@ -12,5 +12,4 @@ router.get('/sendMail', authController.sendMail)
 router.post('/changePassword', authController.changePassword)
 router.get('/getListUser', authController.getListUser)
 
-
 module.exports = router
