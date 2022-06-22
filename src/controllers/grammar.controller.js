@@ -5,7 +5,6 @@ var ObjectId = require('mongodb').ObjectID;
 const Kuroshiro = require('kuroshiro');
 const KuromojiAnalyzer = require('kuroshiro-analyzer-kuromoji');
 const request = require('request');
-// const cheerio = require('cheerio');
 const axios = require('axios');
 const Comment = require('../models/comment.model.js');
 

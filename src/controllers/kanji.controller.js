@@ -535,8 +535,8 @@ const refuseCommentKanji = async(req, res) => {
 module.exports = {
     countLevelKanji,
     dataKanji,
-    dataImage,
-    dataExplain,
+    // dataImage,
+    // dataExplain,
     getKanji,
     createLikeKanji,
     createMemKanji,
