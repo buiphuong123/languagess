@@ -1,0 +1,42 @@
+{
+  "name": "apiLanguage",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@firebase/app": "^0.7.6",
+    "@firebase/messaging": "^0.9.4",
+    "async": "^3.2.0",
+    "axios": "^0.24.0",
+    "bcryptjs": "^2.4.3",
+    "cheerio": "^1.0.0-rc.10",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "firebase": "^9.3.0",
+    "firebase-admin": "^10.0.0",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
+    "kuroshiro": "^1.1.2",
+    "kuroshiro-analyzer-kuromoji": "^1.1.0",
+    "mongoose": "^5.12.12",
+    "multer": "^1.4.2",
+    "node-cron": "^3.0.0",
+    "nodemailer": "^6.6.2",
+    "pdf2json": "^1.2.5",
+    "request": "^2.88.2",
+    "socket.io": "^4.3.1",
+    "socket.io-client": "^4.3.2",
+    "tesseract.js": "^2.1.5"
+  },
+  "keywords": [
+    "example",
+    "heroku"
+  ],
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
