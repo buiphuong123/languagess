@@ -121,12 +121,12 @@ app.use(`/${firstParamsRoute}`, adminRoute)
 
 // socket io
 const server = require("http").createServer(app);
-server.listen(3002);
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 
+server.listen(process.env.PORT || 3002);
 
 
 // const ioo = require('socket.io-client');
