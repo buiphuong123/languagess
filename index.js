@@ -23,7 +23,9 @@ const firebaseConfig = {
 // import cac models
 const app = express();
 
-app.use(express.json());
+// app.use(express.json());
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, './.env') });
 
 app.use(cors());
 require('./src/models/user.model');
