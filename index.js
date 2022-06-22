@@ -18,7 +18,8 @@ const firebaseConfig = {
 
 
 
-  require('dotenv').config();
+//   require('dotenv').config();
+require('dotenv').config({ path: 'ENV_FILENAME' });
 
 // import cac models
 const app = express();
