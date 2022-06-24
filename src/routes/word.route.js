@@ -22,6 +22,7 @@ router.post('/accpetComment', wordController.accpetComment)
 router.post('/refuseComment', wordController.refuseComment)
 router.get('/numberWord', wordController.numberWord)
 router.get('/lessionWord', wordController.lessionWord)
+router.post('/createWordNew', wordController.createWordNew)
 
 
 router.get('/testttt', wordController.testttt)
