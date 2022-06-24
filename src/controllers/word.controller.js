@@ -1129,9 +1129,10 @@ const checkStringJapan = async(req, res) => {
 }
 
 const deleteWord = async(req, res) => {
+    console.log('vao delete ne');
     const {id} = req.body;
     Word.findOneAndRemove({_id: id}, function(err) {
-        if(error) {
+        if(err) {
             console.log(err);
             return res.json({message: 'remove err'});
         }
