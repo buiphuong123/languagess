@@ -64,6 +64,80 @@ const createWordNew = async(req, res) => {
     
 
 }
+
+const editWordNew = async(req, res) => {
+    const {id, word, translate, vn, means, kind, amhan, images, example, newExamples} = req.body;
+    // const newWord = new Word({word, translate, vn, means, kind, amhan, level, images, lession});
+    const wordEdit = await Word.findOne({_id: id});
+    if(wordEdit) {
+        wordEdit.word = word;
+        wordEdit.translate = translate;
+        wordEdit.vn = vn;
+        wordEdit.means = means;
+        wordEdit.kind = kind;
+        wordEdit.amhan = amhan;
+        wordEdit.images = images;
+        await wordEdit.save(function(err) {
+            if(err) {
+                return res.json({code: 0,mess: 'tao loij'});
+            }
+            else {
+                // const ex = await WordExample.fin
+                for(var i=0;i<example.length;i++){
+                    // const exxx = await WordExample.findOne({_id: example})
+                    WordExample.findOneAndRemove({_id: example[i]._id}, function(err) {
+                        if(err) {
+                            console.log('loi');
+                        }
+                        else {
+                            console.log('success');
+                        }
+                    })
+                }
+                for(var i=0;i<newExamples.length; i++) {
+                    const kuroshiro = new Kuroshiro();
+                kuroshiro.init(new KuromojiAnalyzer())
+                    .then(function () {
+                        return kuroshiro.convert(newExamples[i].jp, { mode: "furigana", to: "hiragana" });
+                    })
+                    .then(function (result) {
+                        // "<ruby>感<rp>(</rp><rt>かん</rt><rp>)</rp></ruby>じ<ruby>取<rp>(</rp><rt>と</rt><rp>)</rp></ruby>れたら<ruby>手<rp>(</rp><rt>て</rt><rp>)</rp></ruby>を<ruby>繋<rp>(</rp><rt>つな</rt><rp>)</rp></ruby>ごう"
+                        var str1 = result.replaceAll("<ruby>", "a");
+                        var str2 = str1.replaceAll("</rt><rp>)</rp>", "b");
+                        var str3 = str2.replaceAll("<rp>(</rp><rt>", "c");
+                        var str4 = str3.replaceAll("</ruby>", "m");
+                        var str5 = str4.split(/a|m/);
+                        var i;
+                        const strResult = [];
+                        for (i = 0; i < str5.length; i++) {
+                            if (Kuroshiro.Util.isHiragana(str5[i]) || Kuroshiro.Util.isKatakana(str5[i])) {
+                                strResult.push({ value: str5[i], furi: "" });
+                            }
+                            else {
+                                if (i == 0) {
+    
+                                }
+                                else {
+                                    var ss = str5[i].split(/c|b/);
+                                    strResult.push({ value: ss[0], furi: ss[1] });
+                                }
+                            }
+                        }
+                        const newExample = new WordExample({ word_id: id, jp: strResult, vn: newExamples[i].vn });
+                        newExample.save();
+                        
+                    })
+                }
+                return res.json({code: 1, mess: 'edit  word success'});
+    
+            }
+        })
+    
+
+    }
+     
+
+}
 const getWord = async (req, res) => {
     var { id } = req.body;
     Word.aggregate([
@@ -1187,6 +1261,7 @@ const lessionWord = async(req, res) => {
 }
 
 module.exports = {
+    editWordNew,
     createWordNew,
     lessionWord,
     testttt,
