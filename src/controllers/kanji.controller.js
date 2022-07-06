@@ -7,6 +7,43 @@ const KanjiLike = require('../models/kanji/kanjilike.model');
 const KanjiMem = require('../models/kanji/kanjimem.model');
 const KanjiComment = require('../models/kanji/kanjicomment.model');
 
+const createKanjiNew = async(req, res) => {
+    const {kanji, mean, detail, kanji_on, kanji_kun, example_on, example_kun, images, explain, lession, level, compDetail} = req.body;
+    const newKanji = new Kanji({kanji, mean, detail, kanji_on, kanji_kun, example_on, example_kun, image: images, compDetail,  explain, lession, level});
+    await newKanji.save(function(err) {
+        if(err) {
+            return res.json({code: 0, mess: 'error'});
+        }
+        else {
+            return res.json({code: 1, mess: 'success', kanji: newKanji});
+        }
+    })
+}
+
+const editKanjiNew = async(req, res) => {
+    const {id, kanji, mean, detail, kanji_on, kanji_kun, example_on, example_kun, images, explain, compDetail} = req.body;
+    const kanjiEdit = await Kanji.findOne({_id: id});
+    if(kanjiEdit) {
+        kanjiEdit.kanji= kanji;
+        kanjiEdit.mean = mean;
+        kanjiEdit.detail= detail;
+        kanjiEdit.kanji_on = kanji_on;
+        kanjiEdit.kanji_kun= kanji_kun;
+        kanjiEdit.example_on = example_on;
+        kanjiEdit.example_kun= example_kun;
+        kanjiEdit.image = images;
+        kanjiEdit.explain= explain;
+        kanjiEdit.compDetail = compDetail;
+        await kanjiEdit.save(function(err) {
+            if(err) {
+                return res.json({code: 0, mess: 'error'});
+            }
+            else {
+                return res.json({code: 1, mess: 'success'});
+            }
+        })
+    }
+}
 const getKanji = async (req, res) => {
     var { id } = req.body;
     Kanji.aggregate([
@@ -496,7 +533,7 @@ const testWordReplace = () => {
 const deleteKanji = async(req, res) => {
     const {id} = req.body;
     Kanji.findOneAndRemove({_id: id}, function(err) {
-        if(error) {
+        if(err) {
             console.log(err);
             return res.json({message: 'remove err'});
         }
@@ -533,6 +570,8 @@ const refuseCommentKanji = async(req, res) => {
 }
 
 module.exports = {
+    createKanjiNew,
+    editKanjiNew,
     countLevelKanji,
     dataKanji,
     // dataImage,

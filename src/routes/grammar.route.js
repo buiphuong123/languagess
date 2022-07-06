@@ -15,4 +15,8 @@ router.get('/furiGrammar', grammarController.furiGrammar)
 router.get('/countGr', grammarController.countGr)
 router.get('/createLessionGrammar', grammarController.createLessionGrammar)
 
+router.post('/createGrammarNew', grammarController.createGrammarNew)
+router.post('/deleteGrammar', grammarController.deleteGrammar)
+router.post('/editGrammarNew', grammarController.editGrammarNew)
+
 module.exports = router

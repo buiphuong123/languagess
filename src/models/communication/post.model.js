@@ -38,11 +38,6 @@ const postSchema = mongoose.Schema({
         require: true
 
     },
-    islike: {
-        type: Number,
-        require: false
-    }
-
     
 }); 
 

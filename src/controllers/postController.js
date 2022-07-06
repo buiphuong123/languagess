@@ -49,8 +49,8 @@ const User = require('../models/user.model');
 
 
 const getPost = async (req, res) => {
+    console.log('O DIE MEJ VAOF GET POST CHUWA');
     const { id } = req.body;
-    console.log('vao post ne');
     Post.aggregate([
         {
             $lookup: {
@@ -93,7 +93,6 @@ const getPost = async (req, res) => {
                     const count = await LikePost.find({ postId: data[i]._id });
                     data[i].countlike = count.length;
                 }
-                console.log('DATA BEN API NE ', data);
                 return res.json({ code: 1, postData: data });
             }
             forloop();
@@ -114,6 +113,7 @@ const createPost = async (req, res) => {
             return res.json({ code: 1, newPost: newPost });
         }
     })
+    
 }
 
 const createlikePost = async (req, res) => {

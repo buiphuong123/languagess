@@ -11,5 +11,8 @@ router.post('/logout', authController.logout)
 router.get('/sendMail', authController.sendMail)
 router.post('/changePassword', authController.changePassword)
 router.get('/getListUser', authController.getListUser)
+router.post('/editUser', authController.editUser)
+router.post('/uploadAvatar', authController.uploadAvatar)
+router.post('/ChangPasswordUser', authController.ChangPasswordUser)
 
 module.exports = router

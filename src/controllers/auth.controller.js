@@ -282,29 +282,51 @@ const changePassword = async (req, res) => {
     })
 
 }
-const logout = async (req, res) => {
-    const { token, notifiToken } = req.body;
+// const logout = async (req, res) => {
+//     const { token, notifiToken } = req.body;
+//     console.log('vao logout');
+//     console.log('token', token, notifiToken);
+//     try {
+//         const decode = await jwtHelper.verifyToken(token);
+//         const user = await User.findById({
+//             _id: decode.data._id,
+//             token: decode.data.token,
+//         });
+//         if (user) {
+//             await User.findByIdAndUpdate(decode.data._id, {
+//                 $set: {
+//                     token: null,
+//                     notifiToken: null
+//                     // notifiToken: user.notifiToken.filter(item => item !== notifiToken)
+//                 },
+//             });
+//             return res.json({ code: 1, message: 'logout success' });
+//         }
+//     } catch (error) {
+//         return res.json({ code: 0, message: 'not found acount' });
+//     }
+// }
+
+const logout = async(req, res) => {
+    const {id} = req.body;
     console.log('vao logout');
-    console.log('token', token, notifiToken);
-    try {
-        const decode = await jwtHelper.verifyToken(token);
-        const user = await User.findById({
-            _id: decode.data._id,
-            token: decode.data.token,
-        });
-        if (user) {
-            await User.findByIdAndUpdate(decode.data._id, {
-                $set: {
-                    token: null,
-                    notifiToken: null
-                    // notifiToken: user.notifiToken.filter(item => item !== notifiToken)
-                },
-            });
-            return res.json({ code: 1, message: 'logout success' });
-        }
-    } catch (error) {
-        return res.json({ code: 0, message: 'not found acount' });
+    const user = await User.findOne({_id: id});
+    if(user) {
+        user.token = "";
+        user.notifiToken = "";
+        user.save(function(err) {
+            if(err) {
+                return res.json({code: 0, mess: "error"});
+            }
+            else {
+                return res.json({code: 1, mess: "success"});
+            }
+        })
     }
+    else {
+        return res.json({code: 0, mess: "error"});
+    }
+    
 }
 
 
@@ -364,7 +386,53 @@ const getListUser = async(req, res) => {
     const user = await User.find();
     return res.json({user: user});
 }
+const editUser = async(req, res) => {
+    const {id, username, level, hobby} = req.body;
+    const user = await User.findOne({_id: id});
+    if(user) {
+        user.username = username;
+        user.level = level; 
+        user.hobby = hobby;
+        await user.save() ;
+        return res.json({code: 1, mess: 'save success'});
+    }
+}
+
+const uploadAvatar = async(req, res) => {
+    const {id, avatar} = req.body;
+    const user = await User.findOne({_id: id});
+    if(user) {
+        user.avatar = avatar;
+    await user.save() ;
+    return res.json({code: 1, mess: 'success'});
+    }
+}
+const ChangPasswordUser = async(req, res) => {
+    const {id, pass, newPass} = req.body;
+    console.log(pass, newPass);
+    const user = await User.findOne({_id: id});
+    if(user) {
+        if(await bcrypt.compare(pass, user.password)){
+            const hashedPassword = await bcrypt.hash(newPass, 12);
+            user.password = hashedPassword;
+            await user.save(function(error) {
+                if(error) {
+                    return res.json({code: 0, mess: 'change pass error'});
+                }
+                else {
+                    return res.json({code: 1, mess: 'change pass sucess', user: user });
+                }
+            })
+        }
+        else {
+            return res.json({code: 0, mess: 'password fail'});
+        }
+    }
+}
 module.exports = {
+    ChangPasswordUser,
+    uploadAvatar,
+    editUser,
     login,
     signUp,
     resendLink,

@@ -1134,10 +1134,11 @@ const deleteWord = async(req, res) => {
     Word.findOneAndRemove({_id: id}, function(err) {
         if(err) {
             console.log(err);
-            return res.json({message: 'remove err'});
+            return res.json({code: 0,message: 'remove err'});
         }
         else {
-            return res.json({message: 'remove success'});
+            console.log('success nha remove');
+            return res.json({code: 1,message: 'remove success'});
         }
     })
 

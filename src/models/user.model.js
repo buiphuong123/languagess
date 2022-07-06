@@ -36,6 +36,18 @@ const userSchema = mongoose.Schema({
     role: {
         type: Number, 
         require: false
+    },
+    level: {
+        type: String,
+        require: false,
+    },
+    hobby: {
+        type: String,
+        require: false,
+    },
+    avatar: {
+        type: String,
+        default: "https://secure.gravatar.com/avatar/7d3e8b37851acf4d275b605453b5b1a9?s=256&d=mm&r=g",
     }
 }); 
 

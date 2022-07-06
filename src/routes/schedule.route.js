@@ -7,4 +7,10 @@ router.post('/getSchedule', scheduleController.getSchedule)
 router.post('/deleteschedule', scheduleController.deleteschedule)
 router.post('/editschedule', scheduleController.editschedule)
 
+
+router.post('/suggesst', scheduleController.suggesst)
+router.post('/suggesst1', scheduleController.suggesst1)
+router.post('/startLearn', scheduleController.startLearn)
+router.post('/testSchedule', scheduleController.testSchedule)
+
 module.exports = router

@@ -17,6 +17,18 @@ const Comment = require('../models/comment.model.js');
 //         return res.json({ code: 0, error: "Netword error" });
 //     }
 // }
+const createGrammarNew = async(req, res) => {
+    const {uses, level, lession, grammar} = req.body;
+    const newGrammar = new Grammar({uses, level, grammar, lession});
+    await newGrammar.save(function(err) {
+        if(err) {
+            return res.json({code: 0, mess: 'error'});
+        }
+        else {
+            return res.json({code: 1, mess: 'success', grammar: newGrammar});
+        }
+    })
+}
 
 const createGrammar = async (req, res) => {
     const { grammar, lession, level, translation, structGrammar, indiGrammar, meanGrammar, exampleGrammar } = req.body;
@@ -381,7 +393,7 @@ const createLessionGrammar = async(req, res) => {
 const deleteGrammar = async(req, res) => {
     const {id} = req.body;
     Grammar.findOneAndRemove({_id: id}, function(err) {
-        if(error) {
+        if(err) {
             console.log(err);
             return res.json({message: 'remove err'});
         }
@@ -390,6 +402,23 @@ const deleteGrammar = async(req, res) => {
         }
     })
 
+}
+
+const editGrammarNew = async(req, res) => {
+    const {id, uses, grammar} = req.body;
+    const grammarEdit = await Grammar.findOne({_id: id});
+    if(grammarEdit) {
+        grammarEdit.grammar = grammar;
+        grammarEdit.uses = uses;
+        await grammarEdit.save(function(err) {
+            if(err) {
+                return res.json({code: 0, mess: 'error'});
+            }
+            else {
+                return res.json({code: 1, mess: 'success'});
+            }
+        })
+    }
 }
 
 const accpetCommentGrammar = async(req, res) => {
@@ -419,6 +448,8 @@ const refuseCommentGrammar = async(req, res) => {
 
 
 module.exports = {
+    createGrammarNew,
+    editGrammarNew,
     subKanji,
     createGrammar,
     getGrammar,

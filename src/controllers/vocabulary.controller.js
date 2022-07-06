@@ -59,7 +59,9 @@ const deleteVocabulary = async (req, res) => {
 // }
 
 const createWordInVoca = async (req, res) => {
+    console.log('dit me vao day');
     const { id, word, translate, vn, type, note, date, explain } = req.body;
+    console.log('datae truyen vao la ', date);
     console.log('DATA DAU VAO DE ADD DAY NHE ', id, word, translate, vn, type, note, date, explain);
     const vocabulary = await Vocabulary.findOne({ _id: id });
     if (vocabulary) {
@@ -71,6 +73,7 @@ const createWordInVoca = async (req, res) => {
         a.note = note;
         a.date = date;
         a.explain = explain;
+        console.log('dât duoc tao la ',a );
         vocabulary.data.push(a);
         await vocabulary.save();
         return res.json('add success');

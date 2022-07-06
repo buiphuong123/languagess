@@ -15,9 +15,12 @@ router.get('/findType', kanjiController.findType)
 router.post('/createKanjiComment', kanjiController.createKanjiComment)
 
 router.get('/testWordReplace', kanjiController.testWordReplace)
-router.get('/deleteKanji', kanjiController.deleteKanji)
+router.post('/deleteKanji', kanjiController.deleteKanji)
 router.post('/accpetCommentKanji', kanjiController.accpetCommentKanji)
 router.post('/refuseCommentKanji', kanjiController.refuseCommentKanji)
 router.get('/countLevelKanji', kanjiController.countLevelKanji)
+
+router.post('/createKanjiNew', kanjiController.createKanjiNew)
+router.post('/editKanjiNew', kanjiController.editKanjiNew)
 
 module.exports = router

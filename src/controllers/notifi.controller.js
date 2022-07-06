@@ -29,13 +29,14 @@ const test1 = async (req, res) => {
 }
 
 const getNotifi = async (req, res) => {
+    
     const { username } = req.body;
     const listNoti = await Notification.find({ username });
     return res.json({ code: 1, listNoti: listNoti });
 }
 
 const sendNotiToDeviceAsset = async (req, res) => {
-    const { list_user, action, noti, type, username } = req.body;
+    const { list_user, action, noti, type, username, user_id } = req.body;
     var content = "";
     for (var i = 0; i < list_user.length; i++) {
         var comment;
@@ -77,7 +78,7 @@ const sendNotiToDeviceAsset = async (req, res) => {
 
         // console.log('DATA WORD OF COMMENT LA ',dataaa); // data t lưu đây nhé 
             console.log('data test day nhe');
-            const newNotifi = new Notification({ username: comment.user_id.username, content, time, action, data: dataaa, typeNoti: type, isRead: false });
+            const newNotifi = new Notification({user_id, content, time, action, data: dataaa, typeNoti: type, isRead: false });
             await newNotifi.save(function (err) {
                 if (err) {
                     console.log('error ben noti ne');

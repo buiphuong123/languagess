@@ -13,6 +13,14 @@ const scheduleSchema = mongoose.Schema({
         type: String,
         require: false
     },
+    type: {
+        type: String,
+        require: false,
+    },
+    data: {
+        type: Array,
+        require:false,
+    },
     // datestart: {
     //     type: Date,
     //     require: true,
@@ -21,6 +29,10 @@ const scheduleSchema = mongoose.Schema({
     //     type: Date,
     //     require: true
     // },
+    lession: {
+        type: Object,
+        require: false,
+    },
     date: {
         type: String,
         require: true

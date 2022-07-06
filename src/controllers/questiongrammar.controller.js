@@ -180,7 +180,22 @@ const checkQuestionGrammar = async(req, res) => {
    return res.json({mess: 'ket thuc'});
 }
 
+const questionReset = async(req, res) => {
+    const question = await QuestionGrammar.find();
+    for (i=0;i<question.length;i++) {
+        const ans =question[i].listAns; 
+       for(j=0;j<ans.length;j++) {
+        if(ans[j] === "") {
+            ans.splice(j, 1);
+        }
+        await question[i].save();
+       }
+    }
+   return res.json({question: question});
+}
+
 module.exports = {
+    questionReset,
     checkQuestionGrammar,
     getAllQuestionGrammar,
     createQuestion,
