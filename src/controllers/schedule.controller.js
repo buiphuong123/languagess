@@ -455,10 +455,10 @@ const suggesst = async (req, res) => {
 const suggesst1 = async (req, res) => {
     const { now, future, time, user_id } = req.body;
     console.log(now, future, time);
-    // const schedule = await Schedule.find({user_id, nameSchedule: "Học theo kế hoạch của app "});
-    // if(schedule) {
-    //     return res.json({code: 0, mess: 'Bạn đã thiết lập kế hoạch, vui lòng xóa kế hoạch cũ rồi thiết lập lại'});
-    // }
+    const schedule = await Schedule.find({user_id, nameSchedule: "Học theo kế hoạch của app "});
+    if(schedule) {
+        return res.json({code: 0, mess: 'Bạn đã thiết lập kế hoạch, vui lòng xóa kế hoạch cũ rồi thiết lập lại'});
+    }
     const timeLearn = 2.5;
     var number;
     const n5word = 550//800;

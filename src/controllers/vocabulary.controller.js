@@ -49,10 +49,10 @@ const deleteVocabulary = async (req, res) => {
     Vocabulary.findOneAndRemove({ _id: id }, function (err) {
         if (err) {
             console.log('loi roi');
-            return res.json({ message: 'remove err' });
+            return res.json({code: 0, message: 'remove err' });
         }
         else {
-            return res.json({ message: 'remove success' });
+            return res.json({code: 1, message: 'remove success' });
         }
     })
 }
