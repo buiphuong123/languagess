@@ -2,10 +2,6 @@ const mongoose = require('mongoose');
 
 const notificationSchema = mongoose.Schema({
     user_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        require: true,
-    },
-    username: {
         type: String,
         require: true,
     },
@@ -21,9 +17,29 @@ const notificationSchema = mongoose.Schema({
         type: String,
         require: false
     },
-    data: {
-        type: Object,
-        require: true,
+    dataWord: {
+        type: mongoose.Schema.Types.ObjectId,
+       ref: "word"
+    },
+    dataGrammar: {
+        type: mongoose.Schema.Types.ObjectId,
+       ref: "grammar"
+    },
+    dataKanji: {
+        type: mongoose.Schema.Types.ObjectId,
+       ref: "kanji"
+    },
+    dataPost: {
+        type: mongoose.Schema.Types.ObjectId,
+       ref: "post"
+    },
+    dataVocu: {
+        type: mongoose.Schema.Types.ObjectId,
+       ref: "vocabulary"
+    },
+    dataRemind: {
+        type: mongoose.Schema.Types.ObjectId,
+       ref: "schedule"
     },
     isRead: {
         type: Boolean,

@@ -274,15 +274,15 @@ const findType = async (req, res) => {
 const countLevelKanji = async(req, res) => {
     const kanji = await Kanji.find({level: 2});
     // return res.json(kanji.length);
-    for(var i=200;i<kanji.length;i++) {
-        // console.log(kanji[i].lession);
-        if(kanji[i].lession=== undefined) {
-            kanji[i].lession = 27;
-            await kanji[i].save();
-            console.log('save success');
-        }
-    }
-    console.log('ket thuc');
+    // for(var i=200;i<kanji.length;i++) {
+    //     // console.log(kanji[i].lession);
+    //     if(kanji[i].lession=== undefined) {
+    //         kanji[i].lession = 27;
+    //         await kanji[i].save();
+    //         console.log('save success');
+    //     }
+    // }
+    console.log(kanji.length);
 }
 
 const setLessionKanji = async (req, res) => {
@@ -569,6 +569,9 @@ const refuseCommentKanji = async(req, res) => {
     return res.json({mess: 'accept success'});
 }
 
+// const numberKanji = async(req, res) => {
+//     const kanji = await Kanji.find({})
+// }
 module.exports = {
     createKanjiNew,
     editKanjiNew,

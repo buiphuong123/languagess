@@ -28,6 +28,40 @@ return res.json({minutes, hours, day, month, year});
 }
 
 // const sendToAll = async
+const getCommentTest = async(req, res) => {
+    const {word_id, user_id} = req.body;
+    WordComment.aggregate([
+        {
+            $lookup: {
+                from: "wordactionlikes",
+                let: { user: "$$user_id_like", idd: "$$_id" },
+                pipeline: [
+                    {
+                        $match:
+                        {
+                            $expr:
+                            {
+                                $and:
+                                    [
+                                        { $eq: ["$$user_id_like", user_id] },
+                                        { $eq: ["$$idd", word_id] }
+                                    ]
+                            }
+                        }
+                    },
+                    { $project: { islike: true, _id: 0 } }
+                ],
+                as: "likearr"
+            },
+        }
+    ],  function async(err, data) {
+                if (err) {
+                    return res.json({ code: 0, errMsg: err });
+                } else {
+                    return res.json({ data: data });
+                  }
+            })
+}
 
 const getCommentWord = async(req, res) => {
     const {word_id, user_id} = req.body;
@@ -245,6 +279,7 @@ const getAllWordComment = async(req, res) => {
 }
 module.exports = {
     // createWordComment,
+    getCommentTest,
     createLikeWordComment,
     createDisLikeWordComment,
     // userRequest,

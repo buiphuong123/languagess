@@ -1213,7 +1213,7 @@ const refuseComment = async(req, res) => {
 }
 const numberWord = async(req, res) => {
     const word= await Word.find({level: 2});
-    return res.json({number: word.length});
+    return res.json({number: word.length}); // n5: 440, 4: 468, 3: 1297, n2: 1261
 }
 
 const testttt = async(req, res) => {
@@ -1261,6 +1261,7 @@ const lessionWord = async(req, res) => {
     // }
     console.log('ket thuc')
 }
+
 
 module.exports = {
     editWordNew,

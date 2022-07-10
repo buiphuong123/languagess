@@ -17,10 +17,13 @@ const vocabularySchema = mongoose.Schema({
         type: Number,
         require: false,
     },
-    share: {
-        type: Array,
-        require: false,
-    },
+    share: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user"
+        }
+    ]
+    ,
     remind: {
         type: String,
         require: false,

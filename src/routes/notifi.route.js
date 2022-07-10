@@ -8,5 +8,6 @@ router.post('/getNotifi', notifiController.getNotifi)
 router.post('/takeData', notifiController.takeData)
 router.post('/editReadNotifi', notifiController.editReadNotifi)
 router.post('/sendNotiToDeviceAsset', notifiController.sendNotiToDeviceAsset)
+router.get('/testsend', notifiController.testsend)
 
 module.exports = router

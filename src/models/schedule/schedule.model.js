@@ -13,25 +13,9 @@ const scheduleSchema = mongoose.Schema({
         type: String,
         require: false
     },
-    type: {
-        type: String,
-        require: false,
-    },
     data: {
         type: Array,
         require:false,
-    },
-    // datestart: {
-    //     type: Date,
-    //     require: true,
-    // },
-    // dateend: {
-    //     type: Date,
-    //     require: true
-    // },
-    lession: {
-        type: Object,
-        require: false,
     },
     date: {
         type: String,
@@ -49,10 +33,10 @@ const scheduleSchema = mongoose.Schema({
         type: Number,
         require: true
     },
-    typetime: {
-        type: Number,
-        require: false,
-    }
+    // typetime: {
+    //     type: Number,
+    //     require: false,
+    // }
 }); 
 
 const Schedule = mongoose.model("schedule", scheduleSchema);

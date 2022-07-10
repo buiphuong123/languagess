@@ -76,24 +76,31 @@ const getPost = async (req, res) => {
             },
            
         },
+    
         { $lookup: {
             from: "users",
             localField: "user_id",
             foreignField: "_id",
             as: "user_id"
           }},
+        //   {
+        //     $match: {
+        //         "user_id": JSON.stringify(id)
+        //     }
+        //   }
+          
     ], function async(err, data) {
         if (err) {
             return res.json({ code: 0, errMsg: err });
         } else {
             const forloop = async () => {
-                // data = await Post.populate(data, { path: '_id' })
-                // data = await Post.populate(data, {path: "user_id", select: 'user post'});
-                for (var i = 0; i < data.length; i++) {
-                    const count = await LikePost.find({ postId: data[i]._id });
-                    data[i].countlike = count.length;
+                // console.log('LIST POST DAY NHE', data[0].user_id[0]);
+                const data1 = data.filter(e=>JSON.stringify(e.user_id[0]._id) === JSON.stringify(id));
+                for (var i = 0; i < data1.length; i++) {
+                    const count = await LikePost.find({ postId: data1[i]._id });
+                    data1[i].countlike = count.length;
                 }
-                return res.json({ code: 1, postData: data });
+                return res.json({ code: 1, postData: data1 });
             }
             forloop();
             // return res.json({ code: 1, postData: data.length });

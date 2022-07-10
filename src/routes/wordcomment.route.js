@@ -13,5 +13,6 @@ router.post('/countWordDisLike', wordcommentController.countWordDisLike)
 // router.get('/test', wordcommentController.test)
 router.get('/testWordComment', wordcommentController.testWordComment)
 router.get('/getAllWordComment', wordcommentController.getAllWordComment)
+router.post('/getCommentTest', wordcommentController.getCommentTest)
 
 module.exports = router

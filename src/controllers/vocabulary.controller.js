@@ -1,23 +1,27 @@
 const Vocabulary = require('../models/vocabulary/vocabulary.model');
 const nodemailer = require("nodemailer");
 const User = require('../models/user.model');
-
+const Notification = require('../models/notification.model');
+const axios = require('axios');
 const getVocabulary = async (req, res) => {
     const { user_id } = req.body;
-    const vocabulary = await Vocabulary.find({ user_id: user_id });
+    const vocabulary = await Vocabulary.find({ user_id: user_id }).populate({
+        path: 'share',
+        populate: { path: 'share' }
+    });
     return res.json({ vocabulary: vocabulary, code: 1 });
 }
 
 const getVocabularyShare = async (req, res) => {
     const { user_id } = req.body;
-    var vocabulary = await Vocabulary.find({'user_id': {$nin: user_id},typeShare: 1}).populate("user_id");
-    const alldata = await Vocabulary.find({'user_id': {$nin: user_id},typeShare: 2}).populate("user_id");
-    // const allData = await Vocabulary.find();
-    console.log(alldata);
     console.log(user_id);
+    var vocabulary = await Vocabulary.find({ 'user_id': { $nin: user_id }, typeShare: 1 }).populate("user_id");
+    const alldata = await Vocabulary.find({ 'user_id': { $nin: user_id }, typeShare: 2 }).populate("user_id");
+    // const allData = await Vocabulary.find();
     alldata.map((e) => {
-        if(e.share.findIndex(x => x._id === user_id) !== -1) {
-            vocabulary=vocabulary.concat(e);
+        if (e.share.findIndex(x =>JSON.stringify(x) === JSON.stringify(user_id)) !== -1) {
+            console.log('vao day khong');
+            vocabulary = vocabulary.concat(e);
         }
     })
 
@@ -55,7 +59,7 @@ const deleteVocabulary = async (req, res) => {
 
 // const deleteVocabularyShare = async (req, res) => {
 //     const { id } = req.body;
-    
+
 // }
 
 const createWordInVoca = async (req, res) => {
@@ -73,7 +77,7 @@ const createWordInVoca = async (req, res) => {
         a.note = note;
         a.date = date;
         a.explain = explain;
-        console.log('dât duoc tao la ',a );
+        console.log('dât duoc tao la ', a);
         vocabulary.data.push(a);
         await vocabulary.save();
         return res.json('add success');
@@ -131,37 +135,89 @@ const deleteWordInVoca = async (req, res) => {
 
 const shareVocabulary = async (req, res) => {
     const date = new Date();
-    const { id, listUserShare, remind, noti, userid, typeShare } = req.body;
+    const { id, listUserShare, remind, noti, user_id_share, typeShare } = req.body;
+    console.log(id, listUserShare, remind, noti, user_id_share, typeShare);
+    const users = await User.findOne({_id: user_id_share});
     // console.log('noti la ', noti);
     // const usersss = await User.findOne({_id: userid});
+    const listuser = listUserShare.map(function (el) { return el._id; });
     console.log('LIST USER SHARE LA ', listUserShare);
     const vocabulary = await Vocabulary.findOne({ _id: id });
     if (vocabulary) {
-        vocabulary.share = listUserShare;
+        vocabulary.share = listuser;
         vocabulary.remind = remind;
         vocabulary.typeShare = typeShare;
         await vocabulary.save();
-        // if (noti === true) {
-        //     //         console.log('vao noti = true');
-        //     for (var i = 0; i < listUserShare.length; i++) {
-        //         //             // const userss = await User.findOne({_id: listUserShare[i]._id});
-        //         //             // const voc   abularyUser = await Vocabulary.find({user_id: listUserShare[i]._id});
-        //         //             const vocu = new Vocabulary({name: vocabulary.name, user_id: listUserShare[i]._id, data: vocabulary.data, share: [], usershare: usersss._id, remind: vocabulary.remind, date: date});
-        //         //             await vocu.save();
-        //         var transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env['MAIL_ADDRESS'], pass: process.env['MAIL_PASSWORD'] } });
-        //         var mailOptions = { from: process.env['MAIL_ADDRESS'], to: listUserShare[i].email, subject: `Share vocabulary`, text: 'Hello ' + listUserShare[i].username + ` ${usersss.username} share vocabulary ${vocabulary.name} \n\n Now it\'s time to learn Japanese` + '\n\nThank You!\n' };
-        //         transporter.sendMail(mailOptions, function (err) {
-        //             if (err) {
-        //                 console.log('SEND MAIL ERROR');
-        //                 console.log(err);
-        //                 return res.json({ err });
-        //             }
-        //             console.log('SEND MAIL SUCCESS');
-        //         });
-        //     }
+        if (noti === true) {
+            var content = "";
 
-        //     return res.json('share success');
-        // }
+            var dataWord = undefined;
+            var dataGrammar = undefined;
+            var dataKanji = undefined;
+            var dataPost = undefined;
+            var dataVocu = undefined;
+            var dataRemind = undefined;
+            const data = await Vocabulary.findOne({ _id: id });
+            if (data) {
+                dataVocu = id;
+                content = `${users.username} đã chia sẻ bộ từ vựng cho bạn: ${data.name}`;
+                const time = new Date();
+                
+                for (var i = 0; i < listUserShare.length; i++) {
+                    const newNotifi = new Notification({user_id: listUserShare[i]._id, content, time, action: "share",dataWord, dataGrammar,dataKanji, dataPost, dataVocu,dataRemind, typeNoti: "vocu",  isRead: false});
+                    await newNotifi.save();
+                    axios.post('https://fcm.googleapis.com/fcm/send', {
+                        // "to": 'cVVGGz4rRCC7_hdLwmHh9K:APA91bG7ceBsLeF7rcziCVbQ0wyGQ0YHXrpVN6VxQVCrQTcxOANdHXsRe-vGguZcrD1c7ubM9wJsX93UhNgKMl5i7lWdVIT8kqcLeA7n28QTQjy2SIqhGdZwzQ4NZn9kKk5pzkNEhhnQ',
+                        "to": listUserShare[i].notifiToken,
+                        "notification": {
+                            "body": content,
+                            "title": "HongoApp"
+                        },
+                        "data": {
+                            "action": "share",
+                            "routedata": data,
+                            "notification_id": newNotifi._id,
+                            "type": "vocu"
+                        },
+                    }, {
+                        headers: {
+                            "Authorization": 'key=' + 'AAAAOQ8h2Bo:APA91bE7He0ohIpCkbStbkMl5n-5l6SqSl8cvTO47KcPARZINNozxiRuyD8cSZl8LR7damVxiqjQ90vet9OL-NjflUdEX4dTDFyT00MHxNH1VMKMQ6J64flpb8JkKdYubOSx1vhPqizf',
+                            "Content-Type": "application/json"
+                        }
+                    })
+                        .then(() => {
+                            console.log('send success');
+                            // return res.json({ mess: 'Notification send successfully' });
+
+                        }).catch((err) => {
+                            console.log('send error');
+                            // return res.json({ mess: 'somethinh went wrongy' });
+
+                        })
+                }
+            }
+
+            return res.json({code: 1, mess: 'share success'});
+            //     //         console.log('vao noti = true');
+            //     for (var i = 0; i < listUserShare.length; i++) {
+            //         //             // const userss = await User.findOne({_id: listUserShare[i]._id});
+            //         //             // const voc   abularyUser = await Vocabulary.find({user_id: listUserShare[i]._id});
+            //         //             const vocu = new Vocabulary({name: vocabulary.name, user_id: listUserShare[i]._id, data: vocabulary.data, share: [], usershare: usersss._id, remind: vocabulary.remind, date: date});
+            //         //             await vocu.save();
+            //         var transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env['MAIL_ADDRESS'], pass: process.env['MAIL_PASSWORD'] } });
+            //         var mailOptions = { from: process.env['MAIL_ADDRESS'], to: listUserShare[i].email, subject: `Share vocabulary`, text: 'Hello ' + listUserShare[i].username + ` ${usersss.username} share vocabulary ${vocabulary.name} \n\n Now it\'s time to learn Japanese` + '\n\nThank You!\n' };
+            //         transporter.sendMail(mailOptions, function (err) {
+            //             if (err) {
+            //                 console.log('SEND MAIL ERROR');
+            //                 console.log(err);
+            //                 return res.json({ err });
+            //             }
+            //             console.log('SEND MAIL SUCCESS');
+            //         });
+            //     }
+
+            //     return res.json('share success');
+        }
     }
 }
 module.exports = {
