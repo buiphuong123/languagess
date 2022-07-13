@@ -694,7 +694,7 @@ const suggesst1 = async (req, res) => {
         const levelres = result.map(({ level }) => level).toString();
         const dateres = result.map(({ day }) => day).join(" ngày, ");
 
-        var mess = `Để đạt được mục tiêu bạn sẽ phải học các trình độ ${levelres} trong thời gian lần lượt là ${dateres} ngày. 
+        var mess = `Để đạt được mục tiêu bạn sẽ phải học trình độ N${levelres} trong thời gian lần lượt là ${dateres} ngày. 
 `;
  for(var i=0;i<result.length;i++) {
     const mee = `Với trình độ N${result[i].level}, mỗi ngày bạn sẽ học ${result[i].word} từ vựng, ${result[i].grammar} ngữ pháp và ${result[i].kanji} hán tự

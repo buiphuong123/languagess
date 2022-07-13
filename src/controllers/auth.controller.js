@@ -68,11 +68,11 @@ const login = async (req, res) => {
 }
 
 const sendMail = async (req, res) => {
-    var transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: 'phuongbui7399@gmail.com', pass: 'susudangyeu12' } });
+    var transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: 'phuongbui7399@gmail.com', pass: 'ybuhcrkcgbmaekjr' } });
     var mailOptions = { from: 'phuongbui7399@gmail.com', to: 'buithiphuong07031999@gmail.com', subject: 'kakakaka' };
     transporter.sendMail(mailOptions, function (err) {
         if (err) {
-            console.log('SEND MAIL ERROR');
+            console.log('SEND MAIL ERROR', err);
             return res.json({ err });
         }
         console.log('SEND MAIL SUCCESS');
@@ -179,6 +179,7 @@ const resendLink = async (req, res) => {
 }
 
 const forgot = async (req, res) => {
+    console.log('VAO BEN API CHUA');
     async.waterfall([
         function (done) {
             crypto.randomBytes(20, function (err, buf) {
@@ -190,7 +191,7 @@ const forgot = async (req, res) => {
             User.findOne({ email: req.body.email }, function (err, user) {
                 if (!user) {
                     //   console.log('error', 'No account with that email address exists.');
-                    return res.json({ error: 'No account with that email address exists.' });
+                    return res.json({ code: 0,error: 'No account with that email address exists.' });
                 }
                 user.resetPasswordToken = token;
                 user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
@@ -236,13 +237,13 @@ const resetPassword = async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
         console.log(user);
-        return res.json({ error: 'account not exsist' });
+        return res.json({code: 0, error: 'account not exsist' });
     }
     else {
-        console.log(req.params.token);
-        const resetToken = await User.findOne({ resetPasswordToken: req.params.token });
+        console.log(req.body.token);
+        const resetToken = await User.findOne({ resetPasswordToken: req.body.token });
         if (!resetToken) {
-            return res.json({ err: 'reset token error' });
+            return res.json({code: 0, error: 'reset token error' });
         }
         else {
             const time = await User.findOne({ resetPasswordExpires: { $gt: Date.now() } });
