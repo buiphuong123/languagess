@@ -147,6 +147,7 @@ const getNameGrammar = async (req, res) => {
 }
 
 const getGrammar = async (req, res) => {
+    
     const { id } = req.body;
     console.log(id);
     Grammar.aggregate([
@@ -446,8 +447,13 @@ const refuseCommentGrammar = async(req, res) => {
     return res.json({mess: 'accept success'});
 }
 
+const getNumberkk = async(req, res) => {
+    const grammar = await Grammar.find({level: 5, lession: 2});
+    return res.json(grammar.length);
+}
 
 module.exports = {
+    getNumberkk,
     createGrammarNew,
     editGrammarNew,
     subKanji,

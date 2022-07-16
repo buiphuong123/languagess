@@ -32,7 +32,7 @@ const remind = async (req, res) => {
     const { nameSchedule, note, datestart, dateend, time, timenoti, method, user_id, action } = req.body;
     // const user_id = user._id;
     console.log(typeof user_id);
-    const user = await User.findOne({_id: user_id});
+    const user = await User.findOne({ _id: user_id });
     var currentDate = new Date();// o: ngay, 1 thang, 2 nam  0 nam 1 thang 2 ngay
     // const checkdate = fixDigit(currentDate.getDate()) + '/' + fixDigit(currentDate.getMonth() + 1) + '/' + currentDate.getFullYear();
     const checkdate = fixDigit(currentDate.getFullYear()) + '-' + fixDigit(currentDate.getMonth() + 1) + '-' + currentDate.getDate();
@@ -118,7 +118,7 @@ const remind = async (req, res) => {
                 const content = 'nhắc nhở học tập với tên lịch trình: ' + nameSchedule;
                 var time = new Date();
                 const comment_id = "565656";
-                const newNotifi = new Notification({ user_id: user._id, content, time, action,  dataWord, dataGrammar,dataKanji, dataPost, dataVocu,dataRemind, typeNoti: "schedule", isRead: false });
+                const newNotifi = new Notification({ user_id: user._id, content, time, action, dataWord, dataGrammar, dataKanji, dataPost, dataVocu, dataRemind, typeNoti: "schedule", isRead: false });
                 await newNotifi.save(function (err) {
                     if (err) {
                         return res.json({ code: 0, error: err });
@@ -154,7 +154,7 @@ const remind = async (req, res) => {
                 })
 
             }
-            
+
         });
 
     }
@@ -455,9 +455,9 @@ const suggesst = async (req, res) => {
 const suggesst1 = async (req, res) => {
     const { now, future, time, user_id } = req.body;
     console.log(now, future, time);
-    const schedule = await Schedule.find({user_id, nameSchedule: "Học theo kế hoạch của app "});
-    if(schedule.length!==0) {
-        return res.json({code: 0, mess: 'Bạn đã thiết lập kế hoạch, vui lòng xóa kế hoạch cũ rồi thiết lập lại'});
+    const schedule = await Schedule.find({ user_id, nameSchedule: "Học theo kế hoạch của app " });
+    if (schedule.length !== 0) {
+        return res.json({ code: 2, mess: 'Bạn đã thiết lập kế hoạch, vui lòng xóa kế hoạch cũ rồi thiết lập lại' });
     }
     const timeLearn = 2.5;
     var number;
@@ -696,13 +696,13 @@ const suggesst1 = async (req, res) => {
 
         var mess = `Để đạt được mục tiêu bạn sẽ phải học trình độ N${levelres} trong thời gian lần lượt là ${dateres} ngày. 
 `;
- for(var i=0;i<result.length;i++) {
-    const mee = `Với trình độ N${result[i].level}, mỗi ngày bạn sẽ học ${result[i].word} từ vựng, ${result[i].grammar} ngữ pháp và ${result[i].kanji} hán tự
+        for (var i = 0; i < result.length; i++) {
+            const mee = `Với trình độ N${result[i].level}, mỗi ngày bạn sẽ học ${result[i].word} từ vựng, ${result[i].grammar} ngữ pháp và ${result[i].kanji} hán tự
 `;
-    mess =mess + mee;
- }
- const kh= "Bạn có muốn thực hiện kế hoạch không?"
- mess = mess+kh;
+            mess = mess + mee;
+        }
+        const kh = "Bạn có muốn thực hiện kế hoạch không?"
+        mess = mess + kh;
         console.log(mess);
         // const mess = `Bạn sẽ học ${timeLearn} giờ mỗi ngày, trong đó 30 phút để luyện tập bài cũ, và ${timeLearn - 0.5} giờ để học.
         // Mỗi ngày bạn sẽ học ${wordNumber} từ mới, ${grammarNumber} ngữ pháp và ${kanjiNumber} chữ hán.
@@ -727,8 +727,51 @@ const testSchedule = () => {
 }
 
 const startLearn = async (req, res) => {
-    const { result, user_id } = req.body;
+    const { result, user_id, method, timenoti, time } = req.body;
     console.log(result);
+    var d = time.split(":");
+    var hours = d[0];
+    var minutes = d[1];
+
+    if (timenoti === 1) { // thong bao truoc 10 phut
+        if (minutes < 10) {
+            if (hours === 0) {
+                hours = 23;
+                minutes = 60 - (10 - minutes);
+            }
+            else {
+                hours = hours - 1
+                minutes = 60 - (10 - minutes);
+            }
+        }
+        else {
+            minutes = minutes - 10;
+        }
+    }
+    else if (timenoti === 2) {
+        if (minutes < 30) {
+            if (hours === 0) {
+                hours = 23;
+                minutes = 60 - (30 - minutes);
+            }
+            else {
+                hours = hours - 1;
+                minutes = 60 - (30 - minutes);
+            }
+        }
+        else {
+            minutes = minutes - 30;
+        }
+    }
+    else if (timenoti === 3) {
+        if (hours === 0) {
+            hours = 23;
+        }
+        else {
+            hours = hours - 1;
+        }
+    }
+    const notiTime = hours + ':' + minutes;
     var date = new Date();
     var dategrammar = new Date();
     var datekanji = new Date();
@@ -771,7 +814,7 @@ const startLearn = async (req, res) => {
                         console.log('save success', schedule.data);
                     }
                     else {
-                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: "4:00", timenoti: "3:50", method: 1 });
+                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
                         await schedule.save();
                         console.log('save success');
                     }
@@ -815,7 +858,7 @@ const startLearn = async (req, res) => {
                         console.log('save success ', schedule.data);
                     }
                     else {
-                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: "4:00", timenoti: "3:50", method: 1 });
+                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
                         await schedule.save();
                         console.log('save success');
                     }
@@ -837,7 +880,7 @@ const startLearn = async (req, res) => {
                             console.log('save success', schedule.data);
                         }
                         else {
-                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: "4:00", timenoti: "3:50", method: 1 });
+                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
                             await schedule.save();
                             console.log('save success');
                         }
@@ -868,7 +911,7 @@ const startLearn = async (req, res) => {
                             console.log('save success', schedule.data);
                         }
                         else {
-                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: "4:00", timenoti: "3:50", method: 1 });
+                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
                             await schedule.save();
                             console.log('save success');
                         }
@@ -914,7 +957,7 @@ const startLearn = async (req, res) => {
                         console.log('save success', schedule.data);
                     }
                     else {
-                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: "4:00", timenoti: "3:50", method: 1 });
+                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
                         await schedule.save();
                         console.log('save success');
                     }
@@ -958,7 +1001,7 @@ const startLearn = async (req, res) => {
                         console.log('save success ', schedule.data);
                     }
                     else {
-                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: "4:00", timenoti: "3:50", method: 1 });
+                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
                         await schedule.save();
                         console.log('save success');
                     }
@@ -982,7 +1025,7 @@ const startLearn = async (req, res) => {
                             console.log('save success', schedule.data);
                         }
                         else {
-                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: "4:00", timenoti: "3:50", method: 1 });
+                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
                             await schedule.save();
                             console.log('save success');
                         }
@@ -1014,7 +1057,7 @@ const startLearn = async (req, res) => {
                             console.log('save success', schedule.data);
                         }
                         else {
-                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: "4:00", timenoti: "3:50", method: 1 });
+                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
                             await schedule.save();
                             console.log('save success');
                         }
@@ -1061,7 +1104,7 @@ const startLearn = async (req, res) => {
                         console.log('save success', schedule.data);
                     }
                     else {
-                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: "4:00", timenoti: "3:50", method: 1 });
+                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
                         await schedule.save();
                         console.log('save success');
                     }
@@ -1106,7 +1149,7 @@ const startLearn = async (req, res) => {
                         console.log('save success ', schedule.data);
                     }
                     else {
-                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: "4:00", timenoti: "3:50", method: 1 });
+                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
                         await schedule.save();
                         console.log('save success');
                     }
@@ -1131,7 +1174,7 @@ const startLearn = async (req, res) => {
                             console.log('save success', schedule.data);
                         }
                         else {
-                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: "4:00", timenoti: "3:50", method: 1 });
+                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
                             await schedule.save();
                             console.log('save success');
                         }
@@ -1163,7 +1206,7 @@ const startLearn = async (req, res) => {
                             console.log('save success', schedule.data);
                         }
                         else {
-                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: "4:00", timenoti: "3:50", method: 1 });
+                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
                             await schedule.save();
                             console.log('save success');
                         }
@@ -1195,8 +1238,21 @@ const startLearn = async (req, res) => {
         }
 
     }
+    return res.json({ code: 1 });
 }
 
+const deletesuggestPlain = async (req, res) => {
+    const { user_id } = req.body;
+    Schedule.deleteMany({ user_id: user_id, nameSchedule: "Học theo kế hoạch của app " }, function (err) {
+        if (err) {
+            return res.json({ code: 0, err: "Có lỗi xảy ra!!Vui lòng thử lại" });
+        }
+        else {
+            return res.json({ code: 1, mess: "Xoá kế hoạch thành công" });
+        }
+    })
+
+}
 const setUserForSchedule = async (req, res) => {
     const schedule = await Schedule.find();
     for (var i = 0; i < schedule.length; i++) {
@@ -1206,6 +1262,7 @@ const setUserForSchedule = async (req, res) => {
     }
 }
 module.exports = {
+    deletesuggestPlain,
     setUserForSchedule,
     testSchedule,
     startLearn,
