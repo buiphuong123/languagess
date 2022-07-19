@@ -31,7 +31,7 @@ const getDatesInRange = (startDate, endDate) => {
 const remind = async (req, res) => {
     const { nameSchedule, note, datestart, dateend, time, timenoti, method, user_id, action } = req.body;
     // const user_id = user._id;
-    console.log(typeof user_id);
+    console.log(nameSchedule, note, datestart, dateend, time, timenoti, method, user_id, action );
     const user = await User.findOne({ _id: user_id });
     var currentDate = new Date();// o: ngay, 1 thang, 2 nam  0 nam 1 thang 2 ngay
     // const checkdate = fixDigit(currentDate.getDate()) + '/' + fixDigit(currentDate.getMonth() + 1) + '/' + currentDate.getFullYear();
