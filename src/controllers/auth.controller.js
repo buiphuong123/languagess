@@ -35,7 +35,7 @@ const login = async (req, res) => {
                         return res.json({
                             code: 1,
                             user: user,
-                            success: 'login success'
+                            success: 'Đăng nhập thành công'
                         });
                     })
                     // await newUser.save(function (err) {
@@ -51,16 +51,16 @@ const login = async (req, res) => {
 
                 }
                 else {
-                    return res.json({ error: 'password fail', code: 0 });
+                    return res.json({ error: 'Mật khẩu hoặc tài khoản không đúng', code: 0 });
                 }
             }
             else {
-                return res.json({ error: 'chua xac nhan email!Vui long xac nhan mail de login', code: 0 });
+                return res.json({ error: 'Chưa xác nhận email! Vui lòng xác nhận email để đăng nhập', code: 0 });
             }
 
         }
         else {
-            return res.json({ error: 'not found account', code: 0 });
+            return res.json({ error: 'Không tìm thấy tài khoản', code: 0 });
         }
     } catch (error) {
         return res.json({ error });
@@ -170,9 +170,9 @@ const resendLink = async (req, res) => {
         var mailOptions = { from: process.env['MAIL_ADDRESS'], to: user.email, subject: 'Account Verification Link', text: 'Hello ' + user.name + ',\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/language' + '\/confirmation\/' + user.email + '\/' + user.token + '\n\nThank You!\n' };
         transporter.sendMail(mailOptions, function (err) {
             if (err) {
-                return res.status(500).send({ msg: 'Technical Issue!, Please click on resend for verify your Email.' });
+                return res.status(500).send({ msg: 'Sự cố kỹ thuật !, Vui lòng nhấp vào gửi lại để xác minh Email của bạn.' });
             }
-            return res.status(200).send('A verification email has been sent to ' + user.email + '. It will be expire after one day. If you not get verification Email click on resend token.');
+            return res.status(200).send('Một email xác thực đã được gửi tới ' + user.email + '. Nếu bạn không nhận được email xác minh, hãy nhấp vào gửi lại mã thông báo.');
         });
 
     }
@@ -191,7 +191,7 @@ const forgot = async (req, res) => {
             User.findOne({ email: req.body.email }, function (err, user) {
                 if (!user) {
                     //   console.log('error', 'No account with that email address exists.');
-                    return res.json({ code: 0,error: 'No account with that email address exists.' });
+                    return res.json({ code: 0,error: 'Không có tài khoản với địa chỉ email đó tồn tại.' });
                 }
                 user.resetPasswordToken = token;
                 user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
@@ -223,7 +223,7 @@ const forgot = async (req, res) => {
                 if (err) {
                     return res.status(500).send({ msg: 'Technical Issue!, Please click on resend for verify your Email.' });
                 }
-                return res.json({ code: 1, success: 'An e-mail has been sent to ' + user.email + ' with further instructions.' })
+                return res.json({ code: 1, success: 'Một email đã được gửi tới ' + user.email + ' với hướng dẫn thêm' })
             });
         }
     ], function (err) {
@@ -237,7 +237,7 @@ const resetPassword = async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
         console.log(user);
-        return res.json({code: 0, error: 'account not exsist' });
+        return res.json({code: 0, error: 'Tài khoản không tồn tại' });
     }
     else {
         console.log(req.body.token);
@@ -248,10 +248,10 @@ const resetPassword = async (req, res) => {
         else {
             const time = await User.findOne({ resetPasswordExpires: { $gt: Date.now() } });
             if (!time) {
-                return res.json({ code: 0, error: 'Password reset token has expired' });
+                return res.json({ code: 0, error: 'Mã thông báo đặt lại mật khẩu đã hết hạn' });
             }
             else {
-                return res.json({ code: 1, success: 'reset token success' });
+                return res.json({ code: 1, success: 'Đặt mã thông báo thành công' });
                 // user.password = await bcrypt.hash(req.body.password, 12);
                 // user.resetPasswordExpires = undefined;
                 // user.resetPasswordToken = undefined;
@@ -275,10 +275,10 @@ const changePassword = async (req, res) => {
     user.resetPasswordToken = undefined;
     user.save(function (error, user) {
         if (error) {
-            return res.json({ code: 0, error: 'change password failed' });
+            return res.json({ code: 0, error: 'Thay đổi mật khẩu lỗi' });
         }
         else {
-            return res.json({ code: 1, success: 'change success' });
+            return res.json({ code: 1, success: 'Thay đổi mật khẩu thành công' });
         }
     })
 
@@ -317,15 +317,15 @@ const logout = async(req, res) => {
         user.notifiToken = "";
         user.save(function(err) {
             if(err) {
-                return res.json({code: 0, mess: "error"});
+                return res.json({code: 0, mess: "ĐĂng xuất lỗi"});
             }
             else {
-                return res.json({code: 1, mess: "success"});
+                return res.json({code: 1, mess: "Đăng xuất thành công"});
             }
         })
     }
     else {
-        return res.json({code: 0, mess: "error"});
+        return res.json({code: 0, mess: "Đăng xuất lỗi"});
     }
     
 }
