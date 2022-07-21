@@ -666,11 +666,11 @@ const suggesst1 = async (req, res) => {
             listLevel.push(c);
         }
         else {
-            return res.json({ code: 0, mess: 'trình đọ nhập vào không hợp lệ' });
+            return res.json({ code: 0, mess: 'trình đọ nhập vào không hợp lệ, mục tiêu phải cao hơn trình độ hiện tại!!' });
         }
     }
     if (time < timeEnd) {
-        return res.json({ code: 0, mess: 'Mục tiêu không thể thực hiện' });
+        return res.json({ code: 0, mess: 'Mục tiêu không thể thực hiện, thời gian quá ngắn để có thể thực hiện được mục tiêu!!' });
     }
     else {
         console.log(listLevel);
