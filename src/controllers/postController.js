@@ -49,7 +49,6 @@ const User = require('../models/user.model');
 
 
 const getPost = async (req, res) => {
-    console.log('O DIE MEJ VAOF GET POST CHUWA');
     const { id } = req.body;
     Post.aggregate([
         {
@@ -95,12 +94,12 @@ const getPost = async (req, res) => {
         } else {
             const forloop = async () => {
                 // console.log('LIST POST DAY NHE', data[0].user_id[0]);
-                const data1 = data.filter(e=>JSON.stringify(e.user_id[0]._id) === JSON.stringify(id));
-                for (var i = 0; i < data1.length; i++) {
-                    const count = await LikePost.find({ postId: data1[i]._id });
-                    data1[i].countlike = count.length;
+                // const data1 = data.filter(e=>JSON.stringify(e.user_id[0]._id) === JSON.stringify(id));
+                for (var i = 0; i < data.length; i++) {
+                    const count = await LikePost.find({ postId: data[i]._id });
+                    data[i].countlike = count.length;
                 }
-                return res.json({ code: 1, postData: data1 });
+                return res.json({ code: 1, postData: data });
             }
             forloop();
             // return res.json({ code: 1, postData: data.length });
@@ -190,10 +189,10 @@ const deletePost = async (req, res) => {
     Post.findOneAndRemove({ _id: id }, function (err) {
         if (err) {
             console.log('loi roi');
-            return res.json({ message: 'remove err' });
+            return res.json({code: 0, message: 'remove err' });
         }
         else {
-            return res.json({ message: 'remove success' });
+            return res.json({code: 1, message: 'remove success' });
         }
     })
 

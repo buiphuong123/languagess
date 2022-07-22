@@ -74,23 +74,20 @@ const getResult = async (req, res) => {
 
 const image = async(req, res) => {
     const T = require("tesseract.js");
-    T.recognize('https://res.cloudinary.com/languageword/image/upload/v1643357552/bdwytt1bbbml6midgfrt.png', 'jpn', { logger: e => console.log(e) })
+    T.recognize('https://res.cloudinary.com/languageword/image/upload/v1657081285/qnb0ygrqgn9hahzyf7jl.png', 'jpn', { logger: e => console.log(e) })
         .then(({ data: { text } }) => {
-            const c = text.split(' ').join('');
-            const ss = c.split(/c|b/);
-            const kaka = ss[0].split('\n');
-            const question = kaka[0];
-            const ansA = kaka[1].slice(1);
-            const ansB = ss[1];
-            const ansC = ss[2];
-            // const result = kaka[1].split(' ').join('');
-            // const resultC = result.split('c');
-            // const ansC = resultC[1];
-            // const resultB = resultC[0].split('b');
-            // const ansB = resultB[1];
-            // const resultA = resultB[0].split('a');
-            // const ansA = resultA[1];
-           return res.json({question, ansA, ansB, ansC});
+            console.log(text);
+            // const c = text.split(' ').join('');
+            // const ss = c.split(/c|b/);
+            // const kaka = ss[0].split('\n');
+            // const question = kaka[0];
+            // const ansA = kaka[1].slice(1);
+            // const ansB = ss[1];
+            // const ansC = ss[2];
+            const c = text.split("\n");
+            const question = c[0];
+            c.splice(0,1);
+           return res.json({text, question, listAns: c});
         });
 }
 

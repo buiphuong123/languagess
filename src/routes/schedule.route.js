@@ -15,5 +15,6 @@ router.post('/testSchedule', scheduleController.testSchedule)
 
 router.get('/setUserForSchedule', scheduleController.setUserForSchedule)
 router.post('/deletesuggestPlain', scheduleController.deletesuggestPlain)
+router.post('/startLearnTest', scheduleController.startLearnTest)
 
 module.exports = router

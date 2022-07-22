@@ -371,7 +371,7 @@ const furiGrammar = async (req, res) => {
 }
 
 const countGr = async(req, res) => {
-    const grammar = await Grammar.find({ level: 3});
+    const grammar = await Grammar.find({ level: 5});
     return res.json(grammar.length);
 }
 
