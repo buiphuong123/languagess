@@ -99,6 +99,8 @@ const getPost = async (req, res) => {
                     const count = await LikePost.find({ postId: data[i]._id });
                     data[i].countlike = count.length;
                 }
+                // data.sort((a, b) => new Date(a.time) - new Date(b.time));
+                data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
                 return res.json({ code: 1, postData: data });
             }
             forloop();
