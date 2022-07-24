@@ -179,10 +179,10 @@ const editPost = async (req, res) => {
         post.theme = theme;
         post.time = today;
         await post.save();
-        return res.json('success');
+        return res.json({code: 1, mess: 'success'});
     }
     else {
-        return res.json('error');
+        return res.json({code: 0, mess: 'error'});
     }
 }
 
