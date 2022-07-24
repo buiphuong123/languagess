@@ -1780,7 +1780,88 @@ const setUserForSchedule = async (req, res) => {
         console.log('save succss');
     }
 }
+``
+const runNotifi = async(req, res) => {
+    const {user_id} = req.body;
+    const user = await User.findOne({_id: user_id});
+    const schedule = await Schedule.find({user_id: user_id, method: 1});
+    var currentDate = new Date();// o: ngay, 1 thang, 2 nam  0 nam 1 thang 2 ngay
+    const checkdate = fixDigit(currentDate.getFullYear()) + '-' + fixDigit(currentDate.getMonth() + 1) + '-' + currentDate.getDate();
+    // var c = checkdate.split("-");
+    // const minutes = 52;
+    // const hours= 23;
+    // var checkdate = "2022-07-10";
+    for(var i=0;i<schedule.length;i++) {
+        console.log(checkdate, schedule[i].date);
+        if(checkdate === schedule[i].date) {
+            // console.log('bang nhe haha');
+            var d = schedule[i].timenoti.split(":");
+            const hours = d[0];
+            const minutes = d[1];
+            var content = "";
+            if(schedule[i].nameSchedule === "Học theo kế hoạch của app "){
+                content = 'Đã đến giờ học theo lịch trình của ứng dụng';
+            }
+            else {
+                content =  'nhắc nhở học tập với tên lịch trình: ' + schedule[i].nameSchedule;
+            }
+            cron.schedule(`0 ${minutes} ${hours} * * *`, async () => {
+                console.log('guwi thong bao ne');
+                var time = new Date();
+                console.log('step 1');
+                var dataWord = undefined;
+                console.log('step 2');
+                var dataGrammar = undefined;
+                console.log('step 3');
+                var dataKanji = undefined;
+                var dataPost = undefined;
+                var dataVocu = undefined;
+                var dataRemind = schedule[i]._id;
+                console.log('step cuoi');
+                console.log(schedule[i]);
+                const newNotifi = new Notification({ user_id: user._id, content, time, action : "remind", dataWord, dataGrammar, dataKanji, dataPost, dataVocu, dataRemind, typeNoti: "schedule", isRead: false });
+                console.log(newNotifi);
+                await newNotifi.save(function (err) {
+                    if (err) {
+                        return res.json({ code: 0, error: err });
+                    }
+                    else {
+                        console.log('vao de gui thong bao chua')
+                        axios.post('https://fcm.googleapis.com/fcm/send', {
+                            // "to": 'cVVGGz4rRCC7_hdLwmHh9K:APA91bG7ceBsLeF7rcziCVbQ0wyGQ0YHXrpVN6VxQVCrQTcxOANdHXsRe-vGguZcrD1c7ubM9wJsX93UhNgKMl5i7lWdVIT8kqcLeA7n28QTQjy2SIqhGdZwzQ4NZn9kKk5pzkNEhhnQ',
+                            "to": user.notifiToken,
+                            "notification": {
+                                "body": `${user.username} đã đến giờ học rồi`,
+                                "title": "language"
+                            },
+                            "data": {
+                                "action": action,
+                                "routedata": schedule[i],
+                                "notification_id": newNotifi._id,
+                                "type": "schedule"
+                            },
+                        }, {
+                            headers: {
+                                "Authorization": 'key=' + 'AAAAOQ8h2Bo:APA91bE7He0ohIpCkbStbkMl5n-5l6SqSl8cvTO47KcPARZINNozxiRuyD8cSZl8LR7damVxiqjQ90vet9OL-NjflUdEX4dTDFyT00MHxNH1VMKMQ6J64flpb8JkKdYubOSx1vhPqizf',
+                                "Content-Type": "application/json"
+                            }
+                        })
+                            .then(() => {
+                                res.status(200).send('Notification send successfully');
+                            }).catch((err) => {
+                                res.status(400).send('somethinh went wrongy');
+                                console.log(err);
+                            }
+                            )
+                    }
+                })
+            });
+        }
+
+    }
+}
 module.exports = {
+    runNotifi,
     startLearnTest,
     deletesuggestPlain,
     setUserForSchedule,
