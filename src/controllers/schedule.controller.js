@@ -104,59 +104,60 @@ const remind = async (req, res) => {
         console.log(dateeee);
         newschedule = new Schedule({ user_id, nameSchedule, note, date: dateeee, time: time, timenoti: notiTime, method: method, typetime: timenoti });
         await newschedule.save();
-        dataRemind = newschedule._id;
+        // dataRemind = newschedule._id;
         console.log('create success');
+        return res.json({code: 1})
         // console.log(fixDigit(dates[i].getFullYear() + '-' + fixDigit(dates[i].getMonth() + 1) + '-' + dates[i].getDate());
     }
-    if (check >= from && check <= to) {
-        console.log('VAO DAY DANG CHAY NE', user);
-        cron.schedule(`0 ${minutes} ${hours} * * *`, async () => {
-            console.log('running', hours, minutes, user, user_id);
-            if (method === 1) {
-                var time = new Date();
-                console.log('vao send notifi');
-                const content = 'nhắc nhở học tập với tên lịch trình: ' + nameSchedule;
-                const comment_id = "565656";
-                const newNotifi = new Notification({ user_id: user._id, content, time, action, dataWord, dataGrammar, dataKanji, dataPost, dataVocu, dataRemind, typeNoti: "schedule", isRead: false });
-                await newNotifi.save(function (err) {
-                    if (err) {
-                        return res.json({ code: 0, error: err });
-                    }
-                    else {
-                        axios.post('https://fcm.googleapis.com/fcm/send', {
-                            // "to": 'cVVGGz4rRCC7_hdLwmHh9K:APA91bG7ceBsLeF7rcziCVbQ0wyGQ0YHXrpVN6VxQVCrQTcxOANdHXsRe-vGguZcrD1c7ubM9wJsX93UhNgKMl5i7lWdVIT8kqcLeA7n28QTQjy2SIqhGdZwzQ4NZn9kKk5pzkNEhhnQ',
-                            "to": user.notifiToken,
-                            "notification": {
-                                "body": `${user.username} đã đến giờ học rồi`,
-                                "title": "language"
-                            },
-                            "data": {
-                                "action": action,
-                                "routedata": newschedule,
-                                "notification_id": newNotifi._id,
-                                "type": "schedule"
-                            },
-                        }, {
-                            headers: {
-                                "Authorization": 'key=' + 'AAAAOQ8h2Bo:APA91bE7He0ohIpCkbStbkMl5n-5l6SqSl8cvTO47KcPARZINNozxiRuyD8cSZl8LR7damVxiqjQ90vet9OL-NjflUdEX4dTDFyT00MHxNH1VMKMQ6J64flpb8JkKdYubOSx1vhPqizf',
-                                "Content-Type": "application/json"
-                            }
-                        })
-                            .then(() => {
-                                res.status(200).send('Notification send successfully');
-                            }).catch((err) => {
-                                res.status(400).send('somethinh went wrongy');
-                                console.log(err);
-                            }
-                            )
-                    }
-                })
+    // if (check >= from && check <= to) {
+    //     console.log('VAO DAY DANG CHAY NE', user);
+    //     cron.schedule(`0 ${minutes} ${hours} * * *`, async () => {
+    //         console.log('running', hours, minutes, user, user_id);
+    //         if (method === 1) {
+    //             var time = new Date();
+    //             console.log('vao send notifi');
+    //             const content = 'nhắc nhở học tập với tên lịch trình: ' + nameSchedule;
+    //             const comment_id = "565656";
+    //             const newNotifi = new Notification({ user_id: user._id, content, time, action, dataWord, dataGrammar, dataKanji, dataPost, dataVocu, dataRemind, typeNoti: "schedule", isRead: false });
+    //             await newNotifi.save(function (err) {
+    //                 if (err) {
+    //                     return res.json({ code: 0, error: err });
+    //                 }
+    //                 else {
+    //                     axios.post('https://fcm.googleapis.com/fcm/send', {
+    //                         // "to": 'cVVGGz4rRCC7_hdLwmHh9K:APA91bG7ceBsLeF7rcziCVbQ0wyGQ0YHXrpVN6VxQVCrQTcxOANdHXsRe-vGguZcrD1c7ubM9wJsX93UhNgKMl5i7lWdVIT8kqcLeA7n28QTQjy2SIqhGdZwzQ4NZn9kKk5pzkNEhhnQ',
+    //                         "to": user.notifiToken,
+    //                         "notification": {
+    //                             "body": `${user.username} đã đến giờ học rồi`,
+    //                             "title": "language"
+    //                         },
+    //                         "data": {
+    //                             "action": action,
+    //                             "routedata": newschedule,
+    //                             "notification_id": newNotifi._id,
+    //                             "type": "schedule"
+    //                         },
+    //                     }, {
+    //                         headers: {
+    //                             "Authorization": 'key=' + 'AAAAOQ8h2Bo:APA91bE7He0ohIpCkbStbkMl5n-5l6SqSl8cvTO47KcPARZINNozxiRuyD8cSZl8LR7damVxiqjQ90vet9OL-NjflUdEX4dTDFyT00MHxNH1VMKMQ6J64flpb8JkKdYubOSx1vhPqizf',
+    //                             "Content-Type": "application/json"
+    //                         }
+    //                     })
+    //                         .then(() => {
+    //                             res.status(200).send('Notification send successfully');
+    //                         }).catch((err) => {
+    //                             res.status(400).send('somethinh went wrongy');
+    //                             console.log(err);
+    //                         }
+    //                         )
+    //                 }
+    //             })
 
-            }
+    //         }
 
-        });
+    //     });
 
-    }
+    // }
     // console.log(checkdate);
     // console.log(time.getHours());
     // const start = fixDigit(datestart.getDate()) + '/' + fixDigit(datestart.getMonth() + 1) + '/' + datestart.getFullYear();
@@ -2367,7 +2368,6 @@ const setUserForSchedule = async (req, res) => {
 }
 ``
 const runNotifi = async (req, res) => {
-    var mongoose = require('mongoose');
 
     const { user_id } = req.body;
     const user = await User.findOne({ _id: user_id });
@@ -2378,7 +2378,7 @@ const runNotifi = async (req, res) => {
 
     var CronJob = require('cron').CronJob;
     const arraynoti = [];
-    var job = new CronJob('00 21 12 * * 0-6', function () {
+    var job = new CronJob('00 33 00 * * 0-6', function () {
         console.log('vao nha haha');
         /*
          * Runs every day
@@ -2402,6 +2402,7 @@ const runNotifi = async (req, res) => {
                 a.content = content;
                 a.dataRemind = dataRemind.toString();
                 a.timenoti = schedule[i].timenoti;
+                a.datakk = schedule[i];
                 arraynoti.push(a);
             }
 
@@ -2424,25 +2425,36 @@ const runNotifi = async (req, res) => {
             arrtime.push(key);
             // var d = key.split(":");
         });
-        console.log('array time la ', arrtime);
+        // const valuearr = arrtime;
+        for(var  i=0;i< arrtime.length;i++) {
+            const now = new Date();
+            const start = arrtime[i].split(":");
+            if(parseInt(start[0], 10)*60+parseInt(start[1], 10)<now.getHours() * 60 + now.getMinutes()) {
+                
+                arrtime.splice(i,1);
+                i--;
+            }
+        }
+        console.log('arrtime khi ra kq la ', arrtime);
         // const ka = arrtime[1];
         var kaka = 0;
         // console.log(result[ka]);
-        if (kaka < arrtime.length) {
+        // if (kaka < arrtime.length) {
+            for(var kaka =0;kaka<arrtime.length;kaka++){
             const ka = arrtime[kaka];
             const rs = result[ka];
-            console.log('rs day la ', rs);
+            console.log('rs la nha ', rs);
             var d = arrtime[kaka].split(":");
             var hours = d[0];
             var minutes = d[1];
             console.log('çhuan bij den thoi gian gui nha', hours, minutes);
             cron.schedule(`0 ${minutes} ${hours} * * *`, async () => {
-                console.log('vao chuan bij gui thong baso');
                 for(var i=0;i<ka.length;i++) {
                     var time = new Date();
-                    console.log('data remind là ',rs.length, rs[i].dataRemind);
                     const newNotifi = new Notification({ user_id: user._id, content, time, action: "remind", dataWord: undefined, dataGrammar: undefined, dataKanji: undefined, dataPost: undefined, dataVocu: undefined, dataRemind: rs[i].dataRemind, typeNoti: "schedule", isRead: false });
                     console.log(newNotifi);
+                    console.log(rs[i].datakk);
+                    const kk = rs[i].datakk;
                     await newNotifi.save(function (err) {
                         if (err) {
                             return res.json({ code: 0, error: err });
@@ -2450,7 +2462,6 @@ const runNotifi = async (req, res) => {
                         else {
                             console.log('create notifi success', user.notifiToken);
                             if(user.notifiToken!== undefined || user.notifiToken !== "") {
-                                console.log('van vao thong bao ha');
                                 axios.post('https://fcm.googleapis.com/fcm/send', {
                                 // "to": 'cVVGGz4rRCC7_hdLwmHh9K:APA91bG7ceBsLeF7rcziCVbQ0wyGQ0YHXrpVN6VxQVCrQTcxOANdHXsRe-vGguZcrD1c7ubM9wJsX93UhNgKMl5i7lWdVIT8kqcLeA7n28QTQjy2SIqhGdZwzQ4NZn9kKk5pzkNEhhnQ',
                                 "to": user.notifiToken,
@@ -2460,7 +2471,7 @@ const runNotifi = async (req, res) => {
                                 },
                                 "data": {
                                     "action": "remind",
-                                    "routedata": newNotifi.dataRemind,
+                                    "routedata": kk,
                                     "notification_id": newNotifi._id,
                                     "type": "schedule"
                                 },
@@ -2472,6 +2483,7 @@ const runNotifi = async (req, res) => {
                             })
                                 .then(() => {
                                     console.log('Notification send successfully');
+                                    // kaka++;
                                     
                                 }).catch((err) => {
                                     // res.status(400).send('somethinh went wrongy');
@@ -2480,48 +2492,15 @@ const runNotifi = async (req, res) => {
                                 }
                                 )
                             }
-                            else {
-                                console.log('deo thong baos')
-                            }
+                            
                         }
                     })
                 }
-                // var time = new Date();
-                // const newNotifi = new Notification({ user_id: user._id, content, time, action, dataWord, dataGrammar, dataKanji, dataPost, dataVocu, dataRemind, typeNoti: "schedule", isRead: false });
-                // await newNotifi.save(function (err) {
-                //     if (err) {
-                //         return res.json({ code: 0, error: err });
-                //     }
-                //     else {
-                //         axios.post('https://fcm.googleapis.com/fcm/send', {
-                //             // "to": 'cVVGGz4rRCC7_hdLwmHh9K:APA91bG7ceBsLeF7rcziCVbQ0wyGQ0YHXrpVN6VxQVCrQTcxOANdHXsRe-vGguZcrD1c7ubM9wJsX93UhNgKMl5i7lWdVIT8kqcLeA7n28QTQjy2SIqhGdZwzQ4NZn9kKk5pzkNEhhnQ',
-                //             "to": user.notifiToken,
-                //             "notification": {
-                //                 "body": `${user.username} đã đến giờ học rồi`,
-                //                 "title": "language"
-                //             },
-                //             "data": {
-                //                 "action": action,
-                //                 "routedata": newschedule,
-                //                 "notification_id": newNotifi._id,
-                //                 "type": "schedule"
-                //             },
-                //         }, {
-                //             headers: {
-                //                 "Authorization": 'key=' + 'AAAAOQ8h2Bo:APA91bE7He0ohIpCkbStbkMl5n-5l6SqSl8cvTO47KcPARZINNozxiRuyD8cSZl8LR7damVxiqjQ90vet9OL-NjflUdEX4dTDFyT00MHxNH1VMKMQ6J64flpb8JkKdYubOSx1vhPqizf',
-                //                 "Content-Type": "application/json"
-                //             }
-                //         })
-                //             .then(() => {
-                //                 res.status(200).send('Notification send successfully');
-                //             }).catch((err) => {
-                //                 res.status(400).send('somethinh went wrongy');
-                //                 console.log(err);
-                //             }
-                //             )
-                //     }
-                // })
+               
+
+               
             });
+            console.log('ra vao tiep while thoi');
         }
     }, function () {
         /* This function is executed when the job stops */
