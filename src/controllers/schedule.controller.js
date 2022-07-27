@@ -31,7 +31,7 @@ const getDatesInRange = (startDate, endDate) => {
 const remind = async (req, res) => {
     const { nameSchedule, note, datestart, dateend, time, timenoti, method, user_id, action } = req.body;
     // const user_id = user._id;
-    console.log(nameSchedule, note, datestart, dateend, time, timenoti, method, user_id, action );
+    console.log(nameSchedule, note, datestart, dateend, time, timenoti, method, user_id, action);
     const user = await User.findOne({ _id: user_id });
     var currentDate = new Date();// o: ngay, 1 thang, 2 nam  0 nam 1 thang 2 ngay
     // const checkdate = fixDigit(currentDate.getDate()) + '/' + fixDigit(currentDate.getMonth() + 1) + '/' + currentDate.getFullYear();
@@ -116,7 +116,6 @@ const remind = async (req, res) => {
                 var time = new Date();
                 console.log('vao send notifi');
                 const content = 'nhắc nhở học tập với tên lịch trình: ' + nameSchedule;
-                var time = new Date();
                 const comment_id = "565656";
                 const newNotifi = new Notification({ user_id: user._id, content, time, action, dataWord, dataGrammar, dataKanji, dataPost, dataVocu, dataRemind, typeNoti: "schedule", isRead: false });
                 await newNotifi.save(function (err) {
@@ -677,7 +676,7 @@ const suggesst1 = async (req, res) => {
         for (var i = 0; i < listLevel.length; i++) {
             // console.log('BAT DAU VOI TRINH ', listLevel[i].level);
             const timeee = time * (listLevel[i].all / allfulture); // thời gian học cho từng trình độ 
-            const day = (timeee / (timeLearn )).toFixed() * 1;
+            const day = (timeee / (timeLearn)).toFixed() * 1;
             // console.log('1 NGÀY HK TONG CONG ', day);// tong so ngay hoc trình do 
             const wordNumber = ((listLevel[i].word) / day).toFixed() * 1;
             const grammarNumber = ((listLevel[i].grammar) / day).toFixed() * 1;
@@ -724,6 +723,397 @@ const testSchedule = () => {
     var today = new Date("2022-07-31T13:49:26.461Z");
     var tomorrow = new Date(today.getTime() + (24 * 60 * 60 * 1000));
     console.log(tomorrow);
+}
+const startLearnTest2 = async (req, res) => {
+    const { result, user_id } = req.body;
+    console.log(result);
+    var date = new Date();
+    var dategrammar = new Date();
+    var datekanji = new Date();
+    for (var i = 0; i < 1; i++) {
+        console.log('LEVEL ', result[i].level);
+        console.log('WORD NE');
+        
+        const wordlevel = await Word.find({ level: result[i].level });
+        const maxword = Math.max(...wordlevel.map(w => w.lession ?? 1));
+        const tbword = (wordlevel.length / maxword).toFixed() * 1;
+       
+        var tuthuabuasau = 0;
+        var numberword = 0;
+        var numbergrammar =0;
+        var numberkanji = 0;
+        var rangeword = "";var rangegrammar = "";var rangekanji = "";
+        for (var k = 0; k < maxword; k++) {
+            console.log('bai ', k + 1);
+            var tbbb = tbword;
+            while (tuthuabuasau === 0 && tbbb % result[i].word === 0 && tbbb !== 0) {
+                const dateeee = fixDigit(date.getFullYear()) + '-' + fixDigit(date.getMonth() + 1) + '-' + fixDigit(date.getDate());
+                const data = [];
+                const a = {};
+                a.type = "word";
+                a.level = result[i].level;
+                a.lession = k + 1;
+                a.number = result[i].word;
+                a.range =`${numberword}-${numberword+result[i].word}`;
+
+                
+                numberword = numberword + result[i].word;
+                if(numberword === tbword) {
+                    console.log(`${dateeee} hoc bai ${k + 1} (${result[i].word}) word test ${k+1}`);
+                    numberword=0;
+                    a.test = k+1;
+                }
+                else {
+                    console.log(`${dateeee} hoc bai ${k + 1} (${result[i].word}) word `);
+                }
+                data.push(a);
+                const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
+                if (schedule) {
+                    schedule.data.push(a);
+                    await schedule.save();
+                    console.log('save success', schedule.data);
+                }
+                else {
+                    const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                    await schedule.save();
+                    console.log('save success');
+                }
+                tbbb = tbbb - result[i].grammar;
+                dategrammar = new Date(dategrammar.getTime() + (24 * 60 * 60 * 1000));
+            }
+            // var hoanthanh1bai = ()
+            if (tuthuabuasau === 0) {
+                var word1bai = tbword;
+                var sotuphaihoc = result[i].word;
+                while (sotuphaihoc < word1bai && Math.floor(sotuphaihoc / result[i].word) === 1) {
+                    const dateeee = fixDigit(date.getFullYear()) + '-' + fixDigit(date.getMonth() + 1) + '-' + fixDigit(date.getDate());
+                    // console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) tu`);
+                    rangeword = `${numberword}-${numberword+sotuphaihoc}`;
+                    
+                    console.log('vao 1', numberword);
+                    console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) tu ${rangeword}`);
+                    // const schedule = new Schedule({user_id, })
+                    // numberword = numberword +sotuphaihoc;
+                    const data = [];
+                    const a = {};
+                    a.type = "word";
+                    a.level = result[i].level;
+                    a.lession = k + 1;
+                    a.number = sotuphaihoc;
+                    a.range = rangeword;
+                    data.push(a);
+                    console.log(user_id, a, dateeee);
+                    
+                    numberword = numberword +sotuphaihoc;
+                    word1bai = word1bai - sotuphaihoc;
+                    date = new Date(date.getTime() + (24 * 60 * 60 * 1000));
+                }
+                tuthuabuasau = word1bai;
+
+            }
+
+            else if (tuthuabuasau > 0) {
+                var word1bai = tbword;
+                var sotuphaihoc = result[i].word;
+
+                if (tuthuabuasau < result[i].word) {
+
+                    sotuphaihoc = sotuphaihoc - tuthuabuasau;
+                    const dateeee = fixDigit(date.getFullYear()) + '-' + fixDigit(date.getMonth() + 1) + '-' + fixDigit(date.getDate());
+                    
+                    const rang1 = `${numberword}-${numberword+tuthuabuasau}`;
+                    console.log(`${dateeee} hoc bai ${k} (${tuthuabuasau}) tu ${rang1} test ${k}`);
+                    numberword =0;
+                    
+                    const rang2 = `${numberword}-${numberword+sotuphaihoc}`;
+                    console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) tu ${rang2}`);
+                    numberword = numberword + sotuphaihoc;
+                    console.log('vao 2');
+                    const data = [];
+                    const a = {};
+                    a.test = k;
+                    a.range = rang1;
+                    a.type = "word";
+                    a.level = result[i].level;
+                    a.lession = k;
+                    a.number = tuthuabuasau;
+                    data.push(a);
+                    const b = {};
+                    b.range =rang2
+                    b.type = "word";
+                    b.level = result[i].level;
+                    b.lession = k + 1;
+                    b.number = sotuphaihoc;
+                    data.push(b);
+                    tuthuabuasau = tbword - sotuphaihoc;
+                    date = new Date(date.getTime() + (24 * 60 * 60 * 1000));
+                    while (tuthuabuasau < word1bai && Math.floor(tuthuabuasau / result[i].word) !== 0) {
+                        const dateeee = fixDigit(date.getFullYear()) + '-' + fixDigit(date.getMonth() + 1) + '-' + fixDigit(date.getDate());
+                        
+                        const rang3 =   `${numberword}-${numberword+result[i].word}`;
+                        
+                        numberword = numberword + result[i].word;
+                        if(numberword === tbword) {
+                            console.log(`${dateeee} hoc bai ${k + 1} (${result[i].word}) tu ${rang3} test ${k+1}`);
+                        }
+                        else {
+                            console.log(`${dateeee} hoc bai ${k + 1} (${result[i].word}) tu ${rang3}`);
+                        }
+                        console.log('vao 3');
+                        const data = [];
+                        const a = {};
+                        a.range = rang3;
+                        a.type = "word";
+                        a.level = result[i].level;
+                        a.lession = k + 1;
+                        a.number = result[i].word;
+                        data.push(a);
+                        date = new Date(date.getTime() + (24 * 60 * 60 * 1000));
+                        tuthuabuasau = tuthuabuasau - result[i].word;
+
+
+                    }
+                }
+                else {
+                    // tu thua sau la 22
+                    var word1bai = tbword;
+                    var sotuphaihoc = result[i].word;
+                    while (tuthuabuasau < word1bai && Math.floor(tuthuabuasau / result[i].word) !== 0) {
+                        const dateeee = fixDigit(date.getFullYear()) + '-' + fixDigit(date.getMonth() + 1) + '-' + fixDigit(date.getDate());
+                       
+                        const rang4 = `${numberword}-${numberword+sotuphaihoc}`;
+                        console.log(`${dateeee} hoc bai ${k} (${sotuphaihoc}) tu ${rang4} test ${k}`);
+                        numberword = numberword+sotuphaihoc;
+                        const data = [];
+                        console.log('vao 4');
+                        a.test =k;
+                        a.range = rang4;
+                        const a = {};
+                        a.type = "word";
+                        a.level = result[i].level;
+                        a.lession = k;
+                        a.number = sotuphaihoc;
+                        data.push(a);
+                        date = new Date(date.getTime() + (24 * 60 * 60 * 1000));
+                        tuthuabuasau = tuthuabuasau - sotuphaihoc;
+
+
+                    }
+                    date = new Date(date.getTime() + (24 * 60 * 60 * 1000));
+                    // type =1;
+                }
+
+            }
+        }
+
+        console.log('GRAMMAR NE');
+        const grammarlevel = await Grammar.find({ level: result[i].level });
+        const maxgrammar = Math.max(...grammarlevel.map(w => w.lession ?? 1));
+        const tbgrammar = (grammarlevel.length / maxgrammar).toFixed() * 1;
+        var tuthuabuasaugrammar = 0;
+        for (var k = 0; k < maxgrammar; k++) {
+            console.log('bai ', k + 1);
+            var tbbb = tbgrammar;
+            while (tuthuabuasaugrammar === 0 && tbbb % result[i].grammar === 0 && tbbb !== 0) {
+                const dateeee = fixDigit(dategrammar.getFullYear()) + '-' + fixDigit(dategrammar.getMonth() + 1) + '-' + fixDigit(dategrammar.getDate());
+                
+                const data = [];
+                const a = {};
+                a.type = "grammar";
+                a.level = result[i].level;
+                a.lession = k + 1;
+                a.number = result[i].grammar;
+                a.range =`${numbergrammar}-${numbergrammar+result[i].grammar}`;
+                data.push(a);
+                // console.log(`${dateeee} hoc bai ${k + 1} (${result[i].grammar}) grammar`);
+                numbergrammar = numbergrammar + result[i].grammar;
+                if(numbergrammar === tbgrammar) {
+                    console.log(`${dateeee} hoc bai ${k + 1} (${result[i].grammar}) grammar test ${k+1}`);
+                    numbergrammar =0;
+                }
+                else {
+                    console.log(`${dateeee} hoc bai ${k + 1} (${result[i].grammar}) grammar`);
+                }
+                
+                // const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
+                // if (schedule) {
+                //     schedule.data.push(a);
+                //     await schedule.save();
+                //     console.log('save success', schedule.data);
+                // }
+                // else {
+                //     // const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                //     // await schedule.save();
+                //     console.log('save success');
+                // }
+                tbbb = tbbb - result[i].grammar;
+                dategrammar = new Date(dategrammar.getTime() + (24 * 60 * 60 * 1000));
+            }
+            // var hoanthanh1bai = ()
+            if (tuthuabuasaugrammar === 0 & tbgrammar%result[i].grammar!==0) {
+                var word1bai = tbgrammar;
+                var sotuphaihoc = result[i].grammar;
+                while (sotuphaihoc < word1bai && Math.floor(sotuphaihoc / result[i].grammar) === 1) {
+                    const dateeee = fixDigit(dategrammar.getFullYear()) + '-' + fixDigit(dategrammar.getMonth() + 1) + '-' + fixDigit(dategrammar.getDate());
+                    rangegrammar = `${numbergrammar}-${numbergrammar+sotuphaihoc}`;
+                    console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) grammar ${rangegrammar}`);
+
+                    const data = [];
+                    const a = {};
+                    a.type = "grammar";
+                    a.level = result[i].level;
+                    a.lession = k + 1;
+                    a.number = sotuphaihoc;
+                    a.range = rangegrammar;
+                    data.push(a);
+                    // const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
+                    // if (schedule) {
+                    //     schedule.data.push(a);
+                    //     await schedule.save();
+                    //     console.log('save success', schedule.data);
+                    // }
+                    // else {
+                    //     const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                    //     await schedule.save();
+                    //     console.log('save success');
+                    // }
+                    numbergrammar = numbergrammar +sotuphaihoc;
+
+                    word1bai = word1bai - sotuphaihoc
+                    dategrammar = new Date(dategrammar.getTime() + (24 * 60 * 60 * 1000));
+                }
+                tuthuabuasaugrammar = word1bai;
+
+            }
+
+            else if (tuthuabuasaugrammar > 0) {
+                var word1bai = tbgrammar;
+                var sotuphaihoc = result[i].grammar;
+
+                if (tuthuabuasaugrammar < result[i].grammar) {
+
+                    sotuphaihoc = sotuphaihoc - tuthuabuasaugrammar;
+                    const dateeee = fixDigit(dategrammar.getFullYear()) + '-' + fixDigit(dategrammar.getMonth() + 1) + '-' + fixDigit(dategrammar.getDate());
+                    const rang1 = `${numbergrammar}-${numbergrammar+tuthuabuasaugrammar}`;
+                    console.log(`${dateeee} hoc bai ${k} (${tuthuabuasaugrammar}) grammar ${rang1} test ${k}`);
+                    numbergrammar =0;
+                    const rang2 = `${numbergrammar}-${numbergrammar+sotuphaihoc}`;
+                    console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) grammar ${rang2}`);
+                    numbergrammar = numbergrammar + sotuphaihoc;
+                    const data = [];
+                    const a = {};
+                    a.range = rang1;
+                    a.test = k;
+                    a.type = "grammar";
+                    a.level = result[i].level;
+                    a.lession = k;
+                    a.number = tuthuabuasaugrammar;
+                    data.push(a);
+                    const b = {};
+                    b.range = rang2;
+                    b.type = "grammar";
+                    b.level = result[i].level;
+                    b.lession = k + 1;
+                    b.number = sotuphaihoc;
+                    data.push(b);
+                    // const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
+                    // if (schedule) {
+                    //     schedule.data.push(a);
+                    //     schedule.data.push(b);
+                    //     await schedule.save();
+                    //     console.log('save success ', schedule.data);
+                    // }
+                    // else {
+                    //     const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                    //     await schedule.save();
+                    //     console.log('save success');
+                    // }
+                    tuthuabuasaugrammar = tbgrammar - sotuphaihoc;
+                    dategrammar = new Date(dategrammar.getTime() + (24 * 60 * 60 * 1000));
+                    while (tuthuabuasaugrammar < word1bai && Math.floor(tuthuabuasaugrammar / result[i].grammar) !== 0) {
+                        const dateeee = fixDigit(dategrammar.getFullYear()) + '-' + fixDigit(dategrammar.getMonth() + 1) + '-' + fixDigit(dategrammar.getDate());
+                        const rang3 =   `${numbergrammar}-${numbergrammar+result[i].grammar}`;
+
+                        // console.log(`${dateeee} hoc bai ${k + 1} (${result[i].grammar}) grammar ${rang3} test ${k+1}`);
+                        numbergrammar = numbergrammar + result[i].grammar;
+                        if(numbergrammar === tbgrammar) {
+                            console.log(`${dateeee} hoc bai ${k + 1} (${result[i].grammar}) grammar ${rang3} test ${k+1}`);
+
+                        }
+                        else {
+                            console.log(`${dateeee} hoc bai ${k + 1} (${result[i].grammar}) grammar ${rang3}`);
+
+                        }
+                        const data = [];
+                        const a = {};
+                        a.type = "grammar";
+                        a.range = rang3;
+                        a.level = result[i].level;
+                        a.lession = k + 1;
+                        a.number = result[i].grammar;
+                        data.push(a);
+                        // const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
+                        // if (schedule) {
+                        //     schedule.data.push(a);
+                        //     await schedule.save();
+                        //     console.log('save success', schedule.data);
+                        // }
+                        // else {
+                        //     const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                        //     await schedule.save();
+                        //     console.log('save success');
+                        // }
+
+                        dategrammar = new Date(dategrammar.getTime() + (24 * 60 * 60 * 1000));
+                        tuthuabuasaugrammar = tuthuabuasaugrammar - result[i].grammar;
+
+
+                    }
+                }
+                else {
+                    var word1bai = tbgrammar;
+                    var sotuphaihoc = result[i].grammar;
+                    while (tuthuabuasaugrammar < word1bai && Math.floor(tuthuabuasaugrammar / result[i].grammar) !== 0) {
+                        const dateeee = fixDigit(dategrammar.getFullYear()) + '-' + fixDigit(dategrammar.getMonth() + 1) + '-' + fixDigit(dategrammar.getDate());
+                        const rang4 = `${numbergrammar}-${numbergrammar+sotuphaihoc}`;
+
+                        console.log(`${dateeee} hoc bai ${k} (${sotuphaihoc}) tu ${rang4} test ${k}`);
+                        numbergrammar = numbergrammar + sotuphaihoc;
+                        const data = [];
+                        const a = {};
+                        a.type = "grammar";
+                        a.range = rang4;
+                        a.level = result[i].level;
+                        a.lession = k;
+                        a.number = sotuphaihoc;
+                        a.test = k;
+                        data.push(a);
+                        // const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
+                        // if (schedule) {
+                        //     schedule.data.push(a);
+                        //     await schedule.save();
+                        //     console.log('save success', schedule.data);
+                        // }
+                        // else {
+                        //     const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                        //     await schedule.save();
+                        //     console.log('save success');
+                        // }
+
+                        dategrammar = new Date(dategrammar.getTime() + (24 * 60 * 60 * 1000));
+                        tuthuabuasaugrammar = tuthuabuasaugrammar - sotuphaihoc;
+
+
+                    }
+                    dategrammar = new Date(dategrammar.getTime() + (24 * 60 * 60 * 1000));
+                }
+
+            }
+        }
+
+       
+    }
+    return res.json({ code: 1 });
 }
 
 const startLearn = async (req, res) => {
@@ -789,16 +1179,58 @@ const startLearn = async (req, res) => {
         const maxword = Math.max(...wordlevel.map(w => w.lession ?? 1));
         const tbword = (wordlevel.length / maxword).toFixed() * 1;
         var tuthuabuasau = 0;
+        var numberword = 0;
+        var numbergrammar =0;
+        var numberkanji = 0;
+        var rangeword = "";var rangegrammar = "";var rangekanji = "";
         for (var k = 0; k < maxword; k++) {
             console.log('bai ', k + 1);
+            var tbbb = tbword;
+            while (tuthuabuasau === 0 && tbbb % result[i].word === 0 && tbbb !== 0) {
+                const dateeee = fixDigit(date.getFullYear()) + '-' + fixDigit(date.getMonth() + 1) + '-' + fixDigit(date.getDate());
+                const data = [];
+                const a = {};
+                a.type = "word";
+                a.level = result[i].level;
+                a.lession = k + 1;
+                a.number = result[i].word;
+                a.range =`${numberword}-${numberword+result[i].word}`;
+
+                
+                numberword = numberword + result[i].word;
+                if(numberword === tbword) {
+                    console.log(`${dateeee} hoc bai ${k + 1} (${result[i].word}) word test ${k+1}`);
+                    a.test = k+1;
+                    numberword=0;
+                }
+                else {
+                    console.log(`${dateeee} hoc bai ${k + 1} (${result[i].word}) word `);
+                }
+                data.push(a);
+                const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
+                if (schedule) {
+                    schedule.data.push(a);
+                    await schedule.save();
+                    console.log('save success', schedule.data);
+                }
+                else {
+                    const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                    await schedule.save();
+                    console.log('save success');
+                }
+                tbbb = tbbb - result[i].grammar;
+                dategrammar = new Date(dategrammar.getTime() + (24 * 60 * 60 * 1000));
+            }
 
             // var hoanthanh1bai = ()
-            if (tuthuabuasau === 0) {
+            if (tuthuabuasau === 0 && tbword%result[i].word!==0) {
                 var word1bai = tbword;
                 var sotuphaihoc = result[i].word;
                 while (sotuphaihoc < word1bai && Math.floor(sotuphaihoc / result[i].word) === 1) {
                     const dateeee = fixDigit(date.getFullYear()) + '-' + fixDigit(date.getMonth() + 1) + '-' + fixDigit(date.getDate());
                     console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) tu`);
+                    rangeword = `${numberword}-${numberword+sotuphaihoc}`;
+                    
                     // const schedule = new Schedule({user_id, })
                     const data = [];
                     const a = {};
@@ -806,6 +1238,7 @@ const startLearn = async (req, res) => {
                     a.level = result[i].level;
                     a.lession = k + 1;
                     a.number = sotuphaihoc;
+                    a.range = rangeword;
                     data.push(a);
                     const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
                     if (schedule) {
@@ -819,7 +1252,9 @@ const startLearn = async (req, res) => {
                         console.log('save success');
                     }
                     console.log(user_id, nameSchedule, a, dateeee);
-                    word1bai = word1bai - sotuphaihoc
+                    
+                    numberword = numberword +sotuphaihoc;
+                    word1bai = word1bai - sotuphaihoc;
                     date = new Date(date.getTime() + (24 * 60 * 60 * 1000));
                 }
                 tuthuabuasau = word1bai;
@@ -834,18 +1269,24 @@ const startLearn = async (req, res) => {
 
                     sotuphaihoc = sotuphaihoc - tuthuabuasau;
                     const dateeee = fixDigit(date.getFullYear()) + '-' + fixDigit(date.getMonth() + 1) + '-' + fixDigit(date.getDate());
-                    console.log(`${dateeee} hoc bai ${k} (${tuthuabuasau}) tu`);
-
-                    console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) tu`);
+                    const rang1 = `${numberword}-${numberword+tuthuabuasau}`;
+                    console.log(`${dateeee} hoc bai ${k} (${tuthuabuasau}) tu ${rang1} test ${k}`);
+                    numberword =0;
+                    const rang2 = `${numberword}-${numberword+sotuphaihoc}`;
+                    console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) tu ${rang2}`);
+                    numberword = numberword + sotuphaihoc;
                     const data = [];
                     const a = {};
                     a.type = "word";
+                    a.range = rang1;
+                    a.test = k;
                     a.level = result[i].level;
                     a.lession = k;
                     a.number = tuthuabuasau;
                     data.push(a);
                     const b = {};
                     b.type = "word";
+                    b.range = rang2;
                     b.level = result[i].level;
                     b.lession = k + 1;
                     b.number = sotuphaihoc;
@@ -866,10 +1307,20 @@ const startLearn = async (req, res) => {
                     date = new Date(date.getTime() + (24 * 60 * 60 * 1000));
                     while (tuthuabuasau < word1bai && Math.floor(tuthuabuasau / result[i].word) !== 0) {
                         const dateeee = fixDigit(date.getFullYear()) + '-' + fixDigit(date.getMonth() + 1) + '-' + fixDigit(date.getDate());
-                        console.log(`${dateeee} hoc bai ${k + 1} (${result[i].word}) tu`);
+                        const rang3 =`${numberword}-${numberword+result[i].word}`;
                         const data = [];
                         const a = {};
+                        numberword = numberword + result[i].word;
+                        if(numberword === tbword) {
+                            console.log(`${dateeee} hoc bai ${k + 1} (${result[i].word}) tu ${rang3} test ${k+1}`);
+                            a.test = k+1;
+                        }
+                        else {
+                            console.log(`${dateeee} hoc bai ${k + 1} (${result[i].word}) tu ${rang3}`);
+                        }
+                        
                         a.type = "word";
+                        a.range = rang3;
                         a.level = result[i].level;
                         a.lession = k + 1;
                         a.number = result[i].word;
@@ -896,13 +1347,18 @@ const startLearn = async (req, res) => {
                     var sotuphaihoc = result[i].word;
                     while (tuthuabuasau < word1bai && Math.floor(tuthuabuasau / result[i].word) !== 0) {
                         const dateeee = fixDigit(date.getFullYear()) + '-' + fixDigit(date.getMonth() + 1) + '-' + fixDigit(date.getDate());
-                        console.log(`${dateeee} hoc bai ${k} (${sotuphaihoc}) tu`);
+                        const rang4 = `${numberword}-${numberword+sotuphaihoc}`;
+
+                        console.log(`${dateeee} hoc bai ${k} (${sotuphaihoc}) tu ${rang4} test ${k}`);
+                        numberword = numberword + sotuphaihoc;
                         const data = [];
                         const a = {};
                         a.type = "word";
                         a.level = result[i].level;
                         a.lession = k;
                         a.number = sotuphaihoc;
+                        a.range = rang4;
+                        a.test = k;
                         data.push(a);
                         const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
                         if (schedule) {
@@ -934,14 +1390,52 @@ const startLearn = async (req, res) => {
         var tuthuabuasaugrammar = 0;
         for (var k = 0; k < maxgrammar; k++) {
             console.log('bai ', k + 1);
-
+            var tbbb = tbgrammar;
+            while (tuthuabuasaugrammar === 0 && tbbb % result[i].grammar === 0 && tbbb !== 0) {
+                const dateeee = fixDigit(dategrammar.getFullYear()) + '-' + fixDigit(dategrammar.getMonth() + 1) + '-' + fixDigit(dategrammar.getDate());
+                
+                const data = [];
+                const a = {};
+                a.type = "grammar";
+                a.level = result[i].level;
+                a.lession = k + 1;
+                a.number = result[i].grammar;
+                a.range =`${numbergrammar}-${numbergrammar+result[i].grammar}`;
+                
+                // console.log(`${dateeee} hoc bai ${k + 1} (${result[i].grammar}) grammar`);
+                numbergrammar = numbergrammar + result[i].grammar;
+                if(numbergrammar === tbgrammar) {
+                    console.log(`${dateeee} hoc bai ${k + 1} (${result[i].grammar}) grammar test ${k+1}`);
+                    numbergrammar =0;
+                    a.test = k+1;
+                }
+                else {
+                    console.log(`${dateeee} hoc bai ${k + 1} (${result[i].grammar}) grammar`);
+                }
+                data.push(a);
+                
+                const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
+                if (schedule) {
+                    schedule.data.push(a);
+                    await schedule.save();
+                    console.log('save success', schedule.data);
+                }
+                else {
+                    const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                    await schedule.save();
+                    console.log('save success');
+                }
+                tbbb = tbbb - result[i].grammar;
+                dategrammar = new Date(dategrammar.getTime() + (24 * 60 * 60 * 1000));
+            }
             // var hoanthanh1bai = ()
-            if (tuthuabuasaugrammar === 0) {
+            if (tuthuabuasaugrammar === 0 && tbgrammar%result[i].grammar!==0) {
                 var word1bai = tbgrammar;
                 var sotuphaihoc = result[i].grammar;
                 while (sotuphaihoc < word1bai && Math.floor(sotuphaihoc / result[i].grammar) === 1) {
                     const dateeee = fixDigit(dategrammar.getFullYear()) + '-' + fixDigit(dategrammar.getMonth() + 1) + '-' + fixDigit(dategrammar.getDate());
-                    console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) grammar`);
+                    rangegrammar = `${numbergrammar}-${numbergrammar+sotuphaihoc}`;
+                    console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) grammar ${rangegrammar}`);
 
                     const data = [];
                     const a = {};
@@ -961,6 +1455,7 @@ const startLearn = async (req, res) => {
                         await schedule.save();
                         console.log('save success');
                     }
+                    numbergrammar = numbergrammar +sotuphaihoc;
 
                     word1bai = word1bai - sotuphaihoc
                     dategrammar = new Date(dategrammar.getTime() + (24 * 60 * 60 * 1000));
@@ -977,18 +1472,25 @@ const startLearn = async (req, res) => {
 
                     sotuphaihoc = sotuphaihoc - tuthuabuasaugrammar;
                     const dateeee = fixDigit(dategrammar.getFullYear()) + '-' + fixDigit(dategrammar.getMonth() + 1) + '-' + fixDigit(dategrammar.getDate());
-                    console.log(`${dateeee} hoc bai ${k} (${tuthuabuasaugrammar}) grammar`);
-
-                    console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) grammar`);
+                    const rang1 = `${numbergrammar}-${numbergrammar+tuthuabuasaugrammar}`;
+                    console.log(`${dateeee} hoc bai ${k} (${tuthuabuasaugrammar}) grammar ${rang1} test ${k}`);
+                    numbergrammar =0;
+                    const rang2 = `${numbergrammar}-${numbergrammar+sotuphaihoc}`;
+                    console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) grammar ${rang2}`);
+                    numbergrammar = numbergrammar + sotuphaihoc;
+                    
                     const data = [];
                     const a = {};
                     a.type = "grammar";
+                    a.range = rang1;
+                    a.test =k;
                     a.level = result[i].level;
                     a.lession = k;
                     a.number = tuthuabuasaugrammar;
                     data.push(a);
                     const b = {};
                     b.type = "grammar";
+                    b.range = rang2;
                     b.level = result[i].level;
                     b.lession = k + 1;
                     b.number = sotuphaihoc;
@@ -1009,11 +1511,24 @@ const startLearn = async (req, res) => {
                     dategrammar = new Date(dategrammar.getTime() + (24 * 60 * 60 * 1000));
                     while (tuthuabuasaugrammar < word1bai && Math.floor(tuthuabuasaugrammar / result[i].grammar) !== 0) {
                         const dateeee = fixDigit(dategrammar.getFullYear()) + '-' + fixDigit(dategrammar.getMonth() + 1) + '-' + fixDigit(dategrammar.getDate());
-                        console.log(`${dateeee} hoc bai ${k + 1} (${result[i].grammar}) grammar`);
-
+                        const rang3 =   `${numbergrammar}-${numbergrammar+result[i].grammar}`;
                         const data = [];
                         const a = {};
+                        // console.log(`${dateeee} hoc bai ${k + 1} (${result[i].grammar}) grammar ${rang3} test ${k+1}`);
+                        numbergrammar = numbergrammar + result[i].grammar;
+                        if(numbergrammar === tbgrammar) {
+                            console.log(`${dateeee} hoc bai ${k + 1} (${result[i].grammar}) grammar ${rang3} test ${k+1}`);
+                            a.test = k+1;
+
+
+                        }
+                        else {
+                            console.log(`${dateeee} hoc bai ${k + 1} (${result[i].grammar}) grammar ${rang3}`);
+
+                        }
+                        
                         a.type = "grammar";
+                        a.range = rang3;
                         a.level = result[i].level;
                         a.lession = k + 1;
                         a.number = result[i].grammar;
@@ -1041,14 +1556,19 @@ const startLearn = async (req, res) => {
                     var sotuphaihoc = result[i].grammar;
                     while (tuthuabuasaugrammar < word1bai && Math.floor(tuthuabuasaugrammar / result[i].grammar) !== 0) {
                         const dateeee = fixDigit(dategrammar.getFullYear()) + '-' + fixDigit(dategrammar.getMonth() + 1) + '-' + fixDigit(dategrammar.getDate());
-                        console.log(`${dateeee} hoc bai ${k} (${sotuphaihoc}) tu`);
+                        const rang4 = `${numbergrammar}-${numbergrammar+sotuphaihoc}`;
 
+                        console.log(`${dateeee} hoc bai ${k} (${sotuphaihoc}) tu ${rang4} test ${k}`);
+                        numbergrammar = numbergrammar + sotuphaihoc;
+                        
                         const data = [];
                         const a = {};
                         a.type = "grammar";
                         a.level = result[i].level;
                         a.lession = k;
                         a.number = sotuphaihoc;
+                        a.range = rang4;
+                        a.test =k;
                         data.push(a);
                         const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
                         if (schedule) {
@@ -1081,14 +1601,52 @@ const startLearn = async (req, res) => {
         for (var k = 0; k < maxkanji; k++) {
             console.log('bai ', k + 1);
 
+            var tbbb = tbkanji;
+            while (tuthuabuasaukanji === 0 && tbbb % result[i].kanji === 0 && tbbb !== 0) {
+                const dateeee = fixDigit(datekanji.getFullYear()) + '-' + fixDigit(datekanji.getMonth() + 1) + '-' + fixDigit(datekanji.getDate());
+                
+                const data = [];
+                const a = {};
+                a.type = "kanji";
+                a.level = result[i].level;
+                a.lession = k + 1;
+                a.number = result[i].kanji;
+                a.range =`${numberkanji}-${numberkanji+result[i].kanji}`;
+                
+                // console.log(`${dateeee} hoc bai ${k + 1} (${result[i].grammar}) grammar`);
+                numberkanji = numberkanji + result[i].kanji;
+                if(numberkanji === tbkanji) {
+                    console.log(`${dateeee} hoc bai ${k + 1} (${result[i].kanji}) kanji test ${k+1}`);
+                    numberkanji =0;
+                    a.test = k+1;
+                }
+                else {
+                    console.log(`${dateeee} hoc bai ${k + 1} (${result[i].kanji}) kanji`);
+                }
+                data.push(a);
+                
+                const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
+                if (schedule) {
+                    schedule.data.push(a);
+                    await schedule.save();
+                    console.log('save success', schedule.data);
+                }
+                else {
+                    const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                    await schedule.save();
+                    console.log('save success');
+                }
+                tbbb = tbbb - result[i].kanji;
+                datekanji = new Date(datekanji.getTime() + (24 * 60 * 60 * 1000));
+            }
             // var hoanthanh1bai = ()
-            if (tuthuabuasaukanji === 0) {
+            if (tuthuabuasaukanji === 0 && tbbb % result[i].kanji !== 0 ) {
                 var word1bai = tbkanji;
                 var sotuphaihoc = result[i].kanji;
-                console.log(word1bai);
                 while (sotuphaihoc < word1bai && Math.floor(sotuphaihoc / result[i].kanji) === 1) {
                     const dateeee = fixDigit(datekanji.getFullYear()) + '-' + fixDigit(datekanji.getMonth() + 1) + '-' + fixDigit(datekanji.getDate());
-                    console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) kanji`);
+                    // console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) kanji`);
+                    rangekanji = `${numberkanji}-${numberkanji+sotuphaihoc}`;
 
                     const data = [];
                     const a = {};
@@ -1096,6 +1654,7 @@ const startLearn = async (req, res) => {
                     a.level = result[i].level;
                     a.lession = k + 1;
                     a.number = sotuphaihoc;
+                    a.range =rangekanji;
                     data.push(a);
                     const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
                     if (schedule) {
@@ -1108,6 +1667,7 @@ const startLearn = async (req, res) => {
                         await schedule.save();
                         console.log('save success');
                     }
+                    numberkanji = numberkanji +sotuphaihoc;
 
                     word1bai = word1bai - sotuphaihoc
                     datekanji = new Date(datekanji.getTime() + (24 * 60 * 60 * 1000));
@@ -1124,22 +1684,31 @@ const startLearn = async (req, res) => {
 
                     sotuphaihoc = sotuphaihoc - tuthuabuasaukanji;
                     const dateeee = fixDigit(datekanji.getFullYear()) + '-' + fixDigit(datekanji.getMonth() + 1) + '-' + fixDigit(datekanji.getDate());
-                    console.log(`${dateeee} hoc bai ${k} (${tuthuabuasaukanji}) kanji`);
+                    // console.log(`${dateeee} hoc bai ${k} (${tuthuabuasaukanji}) kanji`);
+                    const rang1 = `${numberkanji}-${numberkanji+tuthuabuasaukanji}`;
 
-                    console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) kanji`);
-
+                    // console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) kanji`);
+                    console.log(`${dateeee} hoc bai ${k} (${tuthuabuasaukanji}) kanji ${rang1} test ${k}`);
+                    numberkanji =0;
+                    const rang2 = `${numberkanji}-${numberkanji+sotuphaihoc}`;
+                    console.log(`${dateeee} hoc bai ${k + 1} (${sotuphaihoc}) tu ${rang2}`);
+                    numberkanji = numberkanji + sotuphaihoc;
                     const data = [];
                     const a = {};
                     a.type = "kanji";
                     a.level = result[i].level;
                     a.lession = k;
                     a.number = tuthuabuasaukanji;
+                    a.range = rang1;
+                    a.test =k;
                     data.push(a);
                     const b = {};
                     b.type = "kanji";
                     b.level = result[i].level;
                     b.lession = k + 1;
                     b.number = sotuphaihoc;
+                    a.range = rang2;
+                    
                     data.push(b);
                     const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
                     if (schedule) {
@@ -1158,11 +1727,21 @@ const startLearn = async (req, res) => {
                     datekanji = new Date(datekanji.getTime() + (24 * 60 * 60 * 1000));
                     while (tuthuabuasaukanji < word1bai && Math.floor(tuthuabuasaukanji / result[i].kanji) !== 0) {
                         const dateeee = fixDigit(datekanji.getFullYear()) + '-' + fixDigit(datekanji.getMonth() + 1) + '-' + fixDigit(datekanji.getDate());
-                        console.log(`${dateeee} hoc bai ${k + 1} (${result[i].kanji}) kanji`);
+                        // console.log(`${dateeee} hoc bai ${k + 1} (${result[i].kanji}) kanji`);
+                        const rang3 =`${numberkanji}-${numberkanji+result[i].kanji}`;
 
                         const data = [];
                         const a = {};
+                        numberkanji = numberkanji + result[i].kanji;
+                        if(numberkanji === tbkanji) {
+                            console.log(`${dateeee} hoc bai ${k + 1} (${result[i].kanji}) kanji ${rang3} test ${k+1}`);
+                            a.test = k+1;
+                        }
+                        else {
+                            console.log(`${dateeee} hoc bai ${k + 1} (${result[i].word}) tu ${rang3}`);
+                        }
                         a.type = "kanji";
+                        a.range = rang3;
                         a.level = result[i].level;
                         a.lession = k + 1;
                         a.number = result[i].kanji;
@@ -1190,14 +1769,20 @@ const startLearn = async (req, res) => {
                     var sotuphaihoc = result[i].kanji;
                     while (tuthuabuasaukanji <= word1bai && Math.floor(tuthuabuasaukanji / result[i].kanji) !== 0) {
                         const dateeee = fixDigit(datekanji.getFullYear()) + '-' + fixDigit(datekanji.getMonth() + 1) + '-' + fixDigit(datekanji.getDate());
-                        console.log(`${dateeee} hoc bai ${k} (${sotuphaihoc}) kanji`);
+                        // console.log(`${dateeee} hoc bai ${k} (${sotuphaihoc}) kanji`);
+                        const rang4 = `${numberkanji}-${numberkanji+sotuphaihoc}`;
 
+                        console.log(`${dateeee} hoc bai ${k} (${sotuphaihoc}) kanji ${rang4} test ${k}`);
+                        numberkanji = numberkanji + sotuphaihoc;
+                        
                         const data = [];
                         const a = {};
                         a.type = "kanji";
                         a.level = result[i].level;
                         a.lession = k;
                         a.number = sotuphaihoc;
+                        a.range = rang4;
+                        a.test = k;
                         data.push(a);
                         const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
                         if (schedule) {
@@ -1405,7 +1990,7 @@ const startLearnTest = async (req, res) => {
         for (var k = 0; k < maxgrammar; k++) {
             console.log('bai ', k + 1);
             var tbbb = tbgrammar;
-            while(tuthuabuasaugrammar === 0 && tbbb%result[i].grammar === 0 && tbbb !==0) {
+            while (tuthuabuasaugrammar === 0 && tbbb % result[i].grammar === 0 && tbbb !== 0) {
                 const dateeee = fixDigit(dategrammar.getFullYear()) + '-' + fixDigit(dategrammar.getMonth() + 1) + '-' + fixDigit(dategrammar.getDate());
                 const data = [];
                 const a = {};
@@ -1416,21 +2001,21 @@ const startLearnTest = async (req, res) => {
                 data.push(a);
                 console.log(`${dateeee} hoc bai ${k + 1} (${result[i].grammar}) grammar`);
                 const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
-                    if (schedule) {
-                        schedule.data.push(a);
-                        await schedule.save();
-                        console.log('save success', schedule.data);
-                    }
-                    else {
-                        // const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
-                        // await schedule.save();
-                        console.log('save success');
-                    }
-                    tbbb = tbbb - result[i].grammar;
-                    dategrammar = new Date(dategrammar.getTime() + (24 * 60 * 60 * 1000));
+                if (schedule) {
+                    schedule.data.push(a);
+                    await schedule.save();
+                    console.log('save success', schedule.data);
+                }
+                else {
+                    // const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                    // await schedule.save();
+                    console.log('save success');
+                }
+                tbbb = tbbb - result[i].grammar;
+                dategrammar = new Date(dategrammar.getTime() + (24 * 60 * 60 * 1000));
             }
             // var hoanthanh1bai = ()
-            if (tuthuabuasaugrammar === 0 &tbgrammar%result[i].grammar !== 0) {
+            if (tuthuabuasaugrammar === 0 & tbgrammar % result[i].grammar !== 0) {
                 var word1bai = tbgrammar;
                 var sotuphaihoc = result[i].grammar;
                 while (sotuphaihoc < word1bai && Math.floor(sotuphaihoc / result[i].grammar) === 1) {
@@ -1575,7 +2160,7 @@ const startLearnTest = async (req, res) => {
         for (var k = 0; k < maxkanji; k++) {
             console.log('bai ', k + 1);
             var tbbb = tbkanji;
-            while(tuthuabuasaukanji === 0 && tbbb%result[i].kanji === 0 && tbbb !==0) {
+            while (tuthuabuasaukanji === 0 && tbbb % result[i].kanji === 0 && tbbb !== 0) {
                 const dateeee = fixDigit(datekanji.getFullYear()) + '-' + fixDigit(datekanji.getMonth() + 1) + '-' + fixDigit(datekanji.getDate());
                 const data = [];
                 const a = {};
@@ -1586,22 +2171,22 @@ const startLearnTest = async (req, res) => {
                 data.push(a);
                 console.log(`${dateeee} hoc bai ${k + 1} (${result[i].kanji}) kanji`);
                 const schedule = await Schedule.findOne({ user_id, nameSchedule, date: dateeee });
-                    if (schedule) {
-                        schedule.data.push(a);
-                        await schedule.save();
-                        console.log('save success', schedule.data);
-                    }
-                    else {
-                        // const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
-                        // await schedule.save();
-                        console.log('save success');
-                    }
-                    tbbb = tbbb - result[i].kanji;
-                    datekanji = new Date(datekanji.getTime() + (24 * 60 * 60 * 1000));
+                if (schedule) {
+                    schedule.data.push(a);
+                    await schedule.save();
+                    console.log('save success', schedule.data);
+                }
+                else {
+                    // const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                    // await schedule.save();
+                    console.log('save success');
+                }
+                tbbb = tbbb - result[i].kanji;
+                datekanji = new Date(datekanji.getTime() + (24 * 60 * 60 * 1000));
             }
 
             // var hoanthanh1bai = ()
-            if (tuthuabuasaukanji === 0 &&tbkanji%result[i].kanji !== 0) {
+            if (tuthuabuasaukanji === 0 && tbkanji % result[i].kanji !== 0) {
                 var word1bai = tbkanji;
                 var sotuphaihoc = result[i].kanji;
                 console.log(word1bai);
@@ -1781,86 +2366,247 @@ const setUserForSchedule = async (req, res) => {
     }
 }
 ``
-const runNotifi = async(req, res) => {
-    const {user_id} = req.body;
-    const user = await User.findOne({_id: user_id});
-    const schedule = await Schedule.find({user_id: user_id, method: 1});
+const runNotifi = async (req, res) => {
+    var mongoose = require('mongoose');
+
+    const { user_id } = req.body;
+    const user = await User.findOne({ _id: user_id });
+    console.log(user.notifiToken=== undefined);
+    const schedule = await Schedule.find({ user_id: user_id, method: 1 });
     var currentDate = new Date();// o: ngay, 1 thang, 2 nam  0 nam 1 thang 2 ngay
     const checkdate = fixDigit(currentDate.getFullYear()) + '-' + fixDigit(currentDate.getMonth() + 1) + '-' + currentDate.getDate();
-    // var c = checkdate.split("-");
-    // const minutes = 52;
-    // const hours= 23;
-    // var checkdate = "2022-07-10";
-    for(var i=0;i<schedule.length;i++) {
-        console.log(checkdate, schedule[i].date);
-        if(checkdate === schedule[i].date) {
-            // console.log('bang nhe haha');
-            var d = schedule[i].timenoti.split(":");
-            const hours = d[0];
-            const minutes = d[1];
-            var content = "";
-            if(schedule[i].nameSchedule === "Học theo kế hoạch của app "){
-                content = 'Đã đến giờ học theo lịch trình của ứng dụng';
+
+    var CronJob = require('cron').CronJob;
+    const arraynoti = [];
+    var job = new CronJob('00 21 12 * * 0-6', function () {
+        console.log('vao nha haha');
+        /*
+         * Runs every day
+         * at 9:00:00 AM.
+         * 
+         */
+        for (var i = 0; i < schedule.length; i++) {
+            console.log(checkdate, schedule[i].date);
+            if (checkdate === schedule[i].date) {
+                // console.log('bang nhe haha');
+                console.log('trung ne haha');
+                var content = "";
+                if (schedule[i].nameSchedule === "Học theo kế hoạch của app ") {
+                    content = 'Đã đến giờ học theo lịch trình của ứng dụng';
+                }
+                else {
+                    content = 'nhắc nhở học tập với tên lịch trình: ' + schedule[i].nameSchedule;
+                }
+                const dataRemind = schedule[i]._id;
+                var a = {};
+                a.content = content;
+                a.dataRemind = dataRemind.toString();
+                a.timenoti = schedule[i].timenoti;
+                arraynoti.push(a);
             }
-            else {
-                content =  'nhắc nhở học tập với tên lịch trình: ' + schedule[i].nameSchedule;
-            }
+
+        }
+        console.log(arraynoti);
+        arraynoti.sort(function (a, b) {
+            return a.timenoti.localeCompare(b.timenoti);
+        });
+        var result = arraynoti.reduce(function (r, a) {
+            r[a.timenoti] = r[a.timenoti] || [];
+            r[a.timenoti].push(a);
+            return r;
+        }, Object.create(null));
+
+        console.log(result);
+        const arrtime = [];
+
+        Object.keys(result).forEach((key) => {
+            // console.log(key);
+            arrtime.push(key);
+            // var d = key.split(":");
+        });
+        console.log('array time la ', arrtime);
+        // const ka = arrtime[1];
+        var kaka = 0;
+        // console.log(result[ka]);
+        if (kaka < arrtime.length) {
+            const ka = arrtime[kaka];
+            const rs = result[ka];
+            console.log('rs day la ', rs);
+            var d = arrtime[kaka].split(":");
+            var hours = d[0];
+            var minutes = d[1];
+            console.log('çhuan bij den thoi gian gui nha', hours, minutes);
             cron.schedule(`0 ${minutes} ${hours} * * *`, async () => {
-                console.log('guwi thong bao ne');
-                var time = new Date();
-                console.log('step 1');
-                var dataWord = undefined;
-                console.log('step 2');
-                var dataGrammar = undefined;
-                console.log('step 3');
-                var dataKanji = undefined;
-                var dataPost = undefined;
-                var dataVocu = undefined;
-                var dataRemind = schedule[i]._id;
-                console.log('step cuoi');
-                console.log(schedule[i]);
-                const newNotifi = new Notification({ user_id: user._id, content, time, action : "remind", dataWord, dataGrammar, dataKanji, dataPost, dataVocu, dataRemind, typeNoti: "schedule", isRead: false });
-                console.log(newNotifi);
-                await newNotifi.save(function (err) {
-                    if (err) {
-                        return res.json({ code: 0, error: err });
-                    }
-                    else {
-                        console.log('vao de gui thong bao chua')
-                        axios.post('https://fcm.googleapis.com/fcm/send', {
-                            // "to": 'cVVGGz4rRCC7_hdLwmHh9K:APA91bG7ceBsLeF7rcziCVbQ0wyGQ0YHXrpVN6VxQVCrQTcxOANdHXsRe-vGguZcrD1c7ubM9wJsX93UhNgKMl5i7lWdVIT8kqcLeA7n28QTQjy2SIqhGdZwzQ4NZn9kKk5pzkNEhhnQ',
-                            "to": user.notifiToken,
-                            "notification": {
-                                "body": `${user.username} đã đến giờ học rồi`,
-                                "title": "language"
-                            },
-                            "data": {
-                                "action": action,
-                                "routedata": schedule[i],
-                                "notification_id": newNotifi._id,
-                                "type": "schedule"
-                            },
-                        }, {
-                            headers: {
-                                "Authorization": 'key=' + 'AAAAOQ8h2Bo:APA91bE7He0ohIpCkbStbkMl5n-5l6SqSl8cvTO47KcPARZINNozxiRuyD8cSZl8LR7damVxiqjQ90vet9OL-NjflUdEX4dTDFyT00MHxNH1VMKMQ6J64flpb8JkKdYubOSx1vhPqizf',
-                                "Content-Type": "application/json"
+                console.log('vao chuan bij gui thong baso');
+                for(var i=0;i<ka.length;i++) {
+                    var time = new Date();
+                    console.log('data remind là ',rs.length, rs[i].dataRemind);
+                    const newNotifi = new Notification({ user_id: user._id, content, time, action: "remind", dataWord: undefined, dataGrammar: undefined, dataKanji: undefined, dataPost: undefined, dataVocu: undefined, dataRemind: rs[i].dataRemind, typeNoti: "schedule", isRead: false });
+                    console.log(newNotifi);
+                    await newNotifi.save(function (err) {
+                        if (err) {
+                            return res.json({ code: 0, error: err });
+                        }
+                        else {
+                            console.log('create notifi success', user.notifiToken);
+                            if(user.notifiToken!== undefined || user.notifiToken !== "") {
+                                console.log('van vao thong bao ha');
+                                axios.post('https://fcm.googleapis.com/fcm/send', {
+                                // "to": 'cVVGGz4rRCC7_hdLwmHh9K:APA91bG7ceBsLeF7rcziCVbQ0wyGQ0YHXrpVN6VxQVCrQTcxOANdHXsRe-vGguZcrD1c7ubM9wJsX93UhNgKMl5i7lWdVIT8kqcLeA7n28QTQjy2SIqhGdZwzQ4NZn9kKk5pzkNEhhnQ',
+                                "to": user.notifiToken,
+                                "notification": {
+                                    "body": `${user.username} đã đến giờ học rồi`,
+                                    "title": "language"
+                                },
+                                "data": {
+                                    "action": "remind",
+                                    "routedata": newNotifi.dataRemind,
+                                    "notification_id": newNotifi._id,
+                                    "type": "schedule"
+                                },
+                            }, {
+                                headers: {
+                                    "Authorization": 'key=' + 'AAAAOQ8h2Bo:APA91bE7He0ohIpCkbStbkMl5n-5l6SqSl8cvTO47KcPARZINNozxiRuyD8cSZl8LR7damVxiqjQ90vet9OL-NjflUdEX4dTDFyT00MHxNH1VMKMQ6J64flpb8JkKdYubOSx1vhPqizf',
+                                    "Content-Type": "application/json"
+                                }
+                            })
+                                .then(() => {
+                                    console.log('Notification send successfully');
+                                    
+                                }).catch((err) => {
+                                    // res.status(400).send('somethinh went wrongy');
+                                    console.log(err);
+                                    return res.json('loi ne');
+                                }
+                                )
                             }
-                        })
-                            .then(() => {
-                                res.status(200).send('Notification send successfully');
-                            }).catch((err) => {
-                                res.status(400).send('somethinh went wrongy');
-                                console.log(err);
+                            else {
+                                console.log('deo thong baos')
                             }
-                            )
-                    }
-                })
+                        }
+                    })
+                }
+                // var time = new Date();
+                // const newNotifi = new Notification({ user_id: user._id, content, time, action, dataWord, dataGrammar, dataKanji, dataPost, dataVocu, dataRemind, typeNoti: "schedule", isRead: false });
+                // await newNotifi.save(function (err) {
+                //     if (err) {
+                //         return res.json({ code: 0, error: err });
+                //     }
+                //     else {
+                //         axios.post('https://fcm.googleapis.com/fcm/send', {
+                //             // "to": 'cVVGGz4rRCC7_hdLwmHh9K:APA91bG7ceBsLeF7rcziCVbQ0wyGQ0YHXrpVN6VxQVCrQTcxOANdHXsRe-vGguZcrD1c7ubM9wJsX93UhNgKMl5i7lWdVIT8kqcLeA7n28QTQjy2SIqhGdZwzQ4NZn9kKk5pzkNEhhnQ',
+                //             "to": user.notifiToken,
+                //             "notification": {
+                //                 "body": `${user.username} đã đến giờ học rồi`,
+                //                 "title": "language"
+                //             },
+                //             "data": {
+                //                 "action": action,
+                //                 "routedata": newschedule,
+                //                 "notification_id": newNotifi._id,
+                //                 "type": "schedule"
+                //             },
+                //         }, {
+                //             headers: {
+                //                 "Authorization": 'key=' + 'AAAAOQ8h2Bo:APA91bE7He0ohIpCkbStbkMl5n-5l6SqSl8cvTO47KcPARZINNozxiRuyD8cSZl8LR7damVxiqjQ90vet9OL-NjflUdEX4dTDFyT00MHxNH1VMKMQ6J64flpb8JkKdYubOSx1vhPqizf',
+                //                 "Content-Type": "application/json"
+                //             }
+                //         })
+                //             .then(() => {
+                //                 res.status(200).send('Notification send successfully');
+                //             }).catch((err) => {
+                //                 res.status(400).send('somethinh went wrongy');
+                //                 console.log(err);
+                //             }
+                //             )
+                //     }
+                // })
             });
         }
+    }, function () {
+        /* This function is executed when the job stops */
+        // console.log(arraynoti);
+    },
+        true, /* Start the job right now */
+        // timeZone /* Time zone of this job. */
+    );
+    // console.log(arraynoti);
 
-    }
+    // for (var i = 0; i < schedule.length; i++) {
+    //     console.log(checkdate, schedule[i].date);
+    //     if (checkdate === schedule[i].date) {
+    //         // console.log('bang nhe haha');
+    //         console.log('trung ne haha');
+    //         var d = schedule[i].timenoti.split(":");
+    //         const hours = d[0];
+    //         const minutes = d[1];
+    //         var content = "";
+    //         if (schedule[i].nameSchedule === "Học theo kế hoạch của app ") {
+    //             content = 'Đã đến giờ học theo lịch trình của ứng dụng';
+    //         }
+    //         else {
+    //             content = 'nhắc nhở học tập với tên lịch trình: ' + schedule[i].nameSchedule;
+    //         }
+    //         const dataRemind = schedule[i]._id;
+    //         var kk = content;
+    //         cron.schedule(`0 ${minutes} ${hours} * * *`, async () => {
+    //             console.log('guwi thong bao ne', content);
+    //             var time = new Date();
+    //             console.log(dataRemind);
+    //             // console.log('step 1');
+    //             // var dataWord = undefined;
+    //             // console.log('step 2');
+    //             // var dataGrammar = undefined;
+    //             // console.log('step 3');
+    //             // var dataKanji = undefined;
+    //             // var dataPost = undefined;
+    //             // var dataVocu = undefined;
+    //             // var dataRemind = schedule[i]._id;
+    //             console.log('step cuoi ra casi ddau ra');
+
+    //             const newNotifi = new Notification({ user_id: user._id, content, time, dataWord: undefined, dataGrammar: undefined, dataKanji: undefined, dataPost: undefined, dataVocu: undefined, dataRemind, typeNoti: "schedule", isRead: false });
+    //             console.log(newNotifi);
+    //             await newNotifi.save(function (err) {
+    //                 if (err) {
+    //                     return res.json({ code: 0, error: err });
+    //                 }
+    //                 else {
+    //                     console.log('vao de gui thong bao chua')
+    //                     axios.post('https://fcm.googleapis.com/fcm/send', {
+    //                         // "to": 'cVVGGz4rRCC7_hdLwmHh9K:APA91bG7ceBsLeF7rcziCVbQ0wyGQ0YHXrpVN6VxQVCrQTcxOANdHXsRe-vGguZcrD1c7ubM9wJsX93UhNgKMl5i7lWdVIT8kqcLeA7n28QTQjy2SIqhGdZwzQ4NZn9kKk5pzkNEhhnQ',
+    //                         "to": user.notifiToken,
+    //                         "notification": {
+    //                             "body": `${user.username} đã đến giờ học rồi`,
+    //                             "title": "language"
+    //                         },
+    //                         "data": {
+    //                             "action": action,
+    //                             "routedata": schedule[i],
+    //                             "notification_id": newNotifi._id,
+    //                             "type": "schedule"
+    //                         },
+    //                     }, {
+    //                         headers: {
+    //                             "Authorization": 'key=' + 'AAAAOQ8h2Bo:APA91bE7He0ohIpCkbStbkMl5n-5l6SqSl8cvTO47KcPARZINNozxiRuyD8cSZl8LR7damVxiqjQ90vet9OL-NjflUdEX4dTDFyT00MHxNH1VMKMQ6J64flpb8JkKdYubOSx1vhPqizf',
+    //                             "Content-Type": "application/json"
+    //                         }
+    //                     })
+    //                         .then(() => {
+    //                             res.status(200).send('Notification send successfully');
+    //                         }).catch((err) => {
+    //                             res.status(400).send('somethinh went wrongy');
+    //                             console.log(err);
+    //                         }
+    //                         )
+    //                 }
+    //             })
+    //         });
+    //     }
+
+    // }
 }
 module.exports = {
+    startLearnTest2,
     runNotifi,
     startLearnTest,
     deletesuggestPlain,

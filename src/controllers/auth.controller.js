@@ -8,7 +8,7 @@ var crypto = require('crypto');
 
 const login = async (req, res) => {
     const { username, password, notifiToken } = req.body;
-    console.log('BEN MAY THAT DAY NHE', username, password);
+    console.log('BEN MAY THAT DAY NHE', username, password, notifiToken);
     console.log('vao login');
     try {
         const user = await User.findOne({ username });

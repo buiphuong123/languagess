@@ -18,4 +18,6 @@ router.post('/deletesuggestPlain', scheduleController.deletesuggestPlain)
 router.post('/startLearnTest', scheduleController.startLearnTest)
 router.post('/runNotifi', scheduleController.runNotifi)
 
+router.post('/startLearnTest2', scheduleController.startLearnTest2)
+
 module.exports = router
