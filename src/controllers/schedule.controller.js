@@ -2370,16 +2370,20 @@ const setUserForSchedule = async (req, res) => {
 const runNotifi = async (req, res) => {
 
     const { user_id } = req.body;
+    
     const user = await User.findOne({ _id: user_id });
-    console.log(user.notifiToken=== undefined);
-    const schedule = await Schedule.find({ user_id: user_id, method: 1 });
+    const timenow = new Date();
+    const hourss = timenow.getHours();
+    const minutess = timenow.getMinutes();
+    var CronJob = require('cron').CronJob;
+    const arraynoti = [];
+    // var job = new CronJob('00 00 00 * * 0-6', function () {
+    var job = new CronJob(`59 ${minutess} ${hourss} * * 0-6`, async () => {
+        const schedule = await Schedule.find({ user_id: user_id, method: 1 });
+        console.log('TEST DAY NE ', schedule.length);
     var currentDate = new Date();// o: ngay, 1 thang, 2 nam  0 nam 1 thang 2 ngay
     const checkdate = fixDigit(currentDate.getFullYear()) + '-' + fixDigit(currentDate.getMonth() + 1) + '-' + currentDate.getDate();
 
-    var CronJob = require('cron').CronJob;
-    const arraynoti = [];
-    var job = new CronJob('00 33 00 * * 0-6', function () {
-        console.log('vao nha haha');
         /*
          * Runs every day
          * at 9:00:00 AM.
