@@ -2380,7 +2380,8 @@ const runNotifi = async (req, res) => {
     
     // var job = new CronJob('00 00 00 * * 0-6', function () {
     // var job = new CronJob(`59 ${minutess} ${hourss} * * 0-6`, async () => {
-        cron.schedule(`59 ${minutess} ${hourss} * * 0-6`, async () => {
+        // cron.schedule(`59 ${minutess} ${hourss} * * 0-6`, async () => {
+     var job = new CronJob(`59 ${minutess} ${hourss} * * 0-6`, async () => {
         const schedule = await Schedule.find({ user_id: user_id, method: 1 });
         console.log('TEST DAY NE ', schedule.length);
     var currentDate = new Date();// o: ngay, 1 thang, 2 nam  0 nam 1 thang 2 ngay
@@ -2509,13 +2510,14 @@ const runNotifi = async (req, res) => {
             });
             console.log('ra vao tiep while thoi');
         }
-    }, function () {
-        /* This function is executed when the job stops */
-        // console.log(arraynoti);
-    },
-        true, /* Start the job right now */
+    }, null,
+        true,
+        'Asia/Bangkok' /* Start the job right now */
         // timeZone /* Time zone of this job. */
+        
+
     );
+    job.start();
     // console.log(arraynoti);
 
     // for (var i = 0; i < schedule.length; i++) {
