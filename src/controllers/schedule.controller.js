@@ -2379,7 +2379,8 @@ const runNotifi = async (req, res) => {
     const millios = timenow.getMilliseconds() +2;
     
     // var job = new CronJob('00 00 00 * * 0-6', function () {
-    var job = new CronJob(`59 ${minutess} ${hourss} * * 0-6`, async () => {
+    // var job = new CronJob(`59 ${minutess} ${hourss} * * 0-6`, async () => {
+        cron.schedule(`59 ${minutess} ${hourss} * * 0-6`, async () => {
         const schedule = await Schedule.find({ user_id: user_id, method: 1 });
         console.log('TEST DAY NE ', schedule.length);
     var currentDate = new Date();// o: ngay, 1 thang, 2 nam  0 nam 1 thang 2 ngay
