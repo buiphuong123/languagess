@@ -2370,13 +2370,14 @@ const setUserForSchedule = async (req, res) => {
 const runNotifi = async (req, res) => {
 
     const { user_id } = req.body;
-    
+    var CronJob = require('cron').CronJob;
+    const arraynoti = [];
     const user = await User.findOne({ _id: user_id });
     const timenow = new Date();
     const hourss = timenow.getHours();
     const minutess = timenow.getMinutes();
-    var CronJob = require('cron').CronJob;
-    const arraynoti = [];
+    const millios = timenow.getMilliseconds() +2;
+    
     // var job = new CronJob('00 00 00 * * 0-6', function () {
     var job = new CronJob(`59 ${minutess} ${hourss} * * 0-6`, async () => {
         const schedule = await Schedule.find({ user_id: user_id, method: 1 });
@@ -2487,6 +2488,7 @@ const runNotifi = async (req, res) => {
                             })
                                 .then(() => {
                                     console.log('Notification send successfully');
+                                    return res.json({mess: 'ok gui nhe'});
                                     // kaka++;
                                     
                                 }).catch((err) => {
