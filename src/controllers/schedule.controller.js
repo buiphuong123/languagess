@@ -2368,7 +2368,7 @@ const setUserForSchedule = async (req, res) => {
 }
 ``
 const runNotifi = async (req, res) => {
-
+    console.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
     const { user_id } = req.body;
     var CronJob = require('cron').CronJob;
     const arraynoti = [];
@@ -2377,7 +2377,7 @@ const runNotifi = async (req, res) => {
     const hourss = timenow.getHours();
     const minutess = timenow.getMinutes();
     const millios = timenow.getMilliseconds() +2;
-    
+    console.log(hourss, minutess);
     // var job = new CronJob('00 00 00 * * 0-6', function () {
     // var job = new CronJob(`59 ${minutess} ${hourss} * * 0-6`, async () => {
         // cron.schedule(`59 ${minutess} ${hourss} * * 0-6`, async () => {
@@ -2512,7 +2512,8 @@ const runNotifi = async (req, res) => {
         }
     }, null,
         true,
-        'Asia/Bangkok' /* Start the job right now */
+        'Asia/Saigon'
+        // 'Asia/Bangkok' /* Start the job right now */
         // timeZone /* Time zone of this job. */
         
 
