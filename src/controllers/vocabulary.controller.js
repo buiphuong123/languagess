@@ -80,10 +80,10 @@ const createWordInVoca = async (req, res) => {
         console.log('dât duoc tao la ', a);
         vocabulary.data.push(a);
         await vocabulary.save();
-        return res.json('add success');
+        return res.json({code: 1, mess: 'add success'});
     }
     else {
-        return res.json('add fail');
+        return res.json({code: 1, mess: 'add fail'});
     }
 }
 const create = async (req, res) => {

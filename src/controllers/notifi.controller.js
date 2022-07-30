@@ -149,19 +149,20 @@ const sendNotiToDeviceAsset = async (req, res) => {
     else if (type === "kanji") {
         data = await Kanji.findOne({ _id: id });
         if (data) {
-            dataWord = id;
+            dataKanji = id;
         }
     }
     else {
         data = await Post.findOne({ _id: id });
             if(data) {
-                dataWord = id;
+                dataPost = id;
             }
     }
     // const comment = await WordComment.findOne({ _id: list_user[i] }).populate("user_id").populate("word_id");
     if (data) {
         if (type === "post") {
-            content = `${username} đã ${action} ${noti} của bạn`;
+
+            content = `${username} đã binhf luận ${noti} của bạn`;
         }
         else {
             content = `${username} đã ${action} ${noti} của bạn: ${comment_content}`;
