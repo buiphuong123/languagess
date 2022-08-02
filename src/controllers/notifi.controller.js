@@ -23,9 +23,19 @@ const createNotifi = async (req, res) => {
 }
 
 const test1 = async (req, res) => {
-    const { titlebody } = req.body;
-    console.log('TEST API NE ', titlebody);
-    return res.json({ titlebody });
+    const sourceText = 'アーバイルスパシエ芝浦BAY-SIDE';
+    const searchText = 'lkk';
+    const lists = [
+        '芝浦',
+        '芝浦BAY-SIDE',
+        'エ芝浦',
+        'パシエ芝浦BAY'
+    ];
+const kk=[];
+    lists.filter(item => {
+        console.log(item.includes(searchText));
+    });
+    // ["エ芝浦", "パシエ芝浦BAY"]
 }
 
 const getNotifi = async (req, res) => {
@@ -154,9 +164,9 @@ const sendNotiToDeviceAsset = async (req, res) => {
     }
     else {
         data = await Post.findOne({ _id: id });
-            if(data) {
-                dataPost = id;
-            }
+        if (data) {
+            dataPost = id;
+        }
     }
     // const comment = await WordComment.findOne({ _id: list_user[i] }).populate("user_id").populate("word_id");
     if (data) {
@@ -168,48 +178,48 @@ const sendNotiToDeviceAsset = async (req, res) => {
             content = `${username} đã ${action} ${noti} của bạn: ${comment_content}`;
         }
     }
-        var time = new Date();
-        const newNotifi = new Notification({ user_id: user_noti, content, time, action, dataWord, dataGrammar,dataKanji, dataPost, dataVocu,dataRemind, typeNoti: type, isRead: false });
-        await newNotifi.save(function (err) {
-            if (err) {
-                console.log(err);
-                return res.json({ code: 0 });
-            }
-            else {
-                axios.post('https://fcm.googleapis.com/fcm/send', {
-                    // "to": 'cVVGGz4rRCC7_hdLwmHh9K:APA91bG7ceBsLeF7rcziCVbQ0wyGQ0YHXrpVN6VxQVCrQTcxOANdHXsRe-vGguZcrD1c7ubM9wJsX93UhNgKMl5i7lWdVIT8kqcLeA7n28QTQjy2SIqhGdZwzQ4NZn9kKk5pzkNEhhnQ',
-                    "to": notifi_token,
-                    "notification": {
-                        "body": `${username} đã ${action} ${noti} của bạn: ${comment_content}`,
-                        "title": "language"
-                    },
-                    "data": {
-                        "action": action,
-                        "routedata": data,
-                        "notification_id": newNotifi._id,
-                        "type": type
-                    },
-                }, {
-                    headers: {
-                        "Authorization": 'key=' + 'AAAAOQ8h2Bo:APA91bE7He0ohIpCkbStbkMl5n-5l6SqSl8cvTO47KcPARZINNozxiRuyD8cSZl8LR7damVxiqjQ90vet9OL-NjflUdEX4dTDFyT00MHxNH1VMKMQ6J64flpb8JkKdYubOSx1vhPqizf',
-                        "Content-Type": "application/json"
-                    }
+    var time = new Date();
+    const newNotifi = new Notification({ user_id: user_noti, content, time, action, dataWord, dataGrammar, dataKanji, dataPost, dataVocu, dataRemind, typeNoti: type, isRead: false });
+    await newNotifi.save(function (err) {
+        if (err) {
+            console.log(err);
+            return res.json({ code: 0 });
+        }
+        else {
+            axios.post('https://fcm.googleapis.com/fcm/send', {
+                // "to": 'cVVGGz4rRCC7_hdLwmHh9K:APA91bG7ceBsLeF7rcziCVbQ0wyGQ0YHXrpVN6VxQVCrQTcxOANdHXsRe-vGguZcrD1c7ubM9wJsX93UhNgKMl5i7lWdVIT8kqcLeA7n28QTQjy2SIqhGdZwzQ4NZn9kKk5pzkNEhhnQ',
+                "to": notifi_token,
+                "notification": {
+                    "body": `${username} đã ${action} ${noti} của bạn: ${comment_content}`,
+                    "title": "language"
+                },
+                "data": {
+                    "action": action,
+                    "routedata": data,
+                    "notification_id": newNotifi._id,
+                    "type": type
+                },
+            }, {
+                headers: {
+                    "Authorization": 'key=' + 'AAAAOQ8h2Bo:APA91bE7He0ohIpCkbStbkMl5n-5l6SqSl8cvTO47KcPARZINNozxiRuyD8cSZl8LR7damVxiqjQ90vet9OL-NjflUdEX4dTDFyT00MHxNH1VMKMQ6J64flpb8JkKdYubOSx1vhPqizf',
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(() => {
+                    console.log('send success');
+                    return res.json({ mess: 'Notification send successfully' });
+
+                }).catch((err) => {
+                    console.log('send error');
+                    return res.json({ mess: 'somethinh went wrongy' });
+
                 })
-                    .then(() => {
-                        console.log('send success');
-                        return res.json({ mess: 'Notification send successfully' });
+        }
+    })
 
-                    }).catch((err) => {
-                        console.log('send error');
-                        return res.json({ mess: 'somethinh went wrongy' });
+}
 
-                    })
-            }
-        })
 
-    }
-
-  
 
 
 
@@ -320,6 +330,7 @@ const testsend = async (req, res) => {
 
         })
 }
+
 
 module.exports = {
     testsend,

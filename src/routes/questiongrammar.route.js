@@ -16,5 +16,6 @@ router.get('/checkQuestionGrammar', questiongrammarController.checkQuestionGramm
 router.post('/testReadImage', questiongrammarController.testReadImage)
 
 router.get('/questionReset', questiongrammarController.questionReset)
+router.post('/readImagekk', questiongrammarController.readImagekk)
 
 module.exports = router

@@ -134,6 +134,23 @@ const readImage1 = async (req, res) => {
         });
 
 }
+const readImagekk = async (req, res) => {
+    const {  urlImage } = req.body;
+    // console.log(urlImage, explain, answer, level, lession, data);
+    const T = require("tesseract.js");
+    T.recognize(urlImage, 'jpn', { logger: e => console.log(e) })
+        .then(async({ data: { text } }) => {
+            const c = text.split("\n");
+            const question = c[0];
+            c.splice(0,1);
+            // return res.json({question: question, answer: c});
+        //     const newquestion = new QuestionGrammar({ question: question, listAns: c, answer: answer, explain, level, lession, data });
+        //    await newquestion.save();
+        //    console.log(newquestion);
+           return res.json({question, c});
+        });
+
+}
 
 const testReadImage = async(req, res) => {
     const {urlImage} = req.body;
@@ -192,6 +209,7 @@ const questionReset = async(req, res) => {
 }
 
 module.exports = {
+    readImagekk,
     questionReset,
     checkQuestionGrammar,
     getAllQuestionGrammar,

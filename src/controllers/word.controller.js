@@ -1000,7 +1000,7 @@ const dataWord = async (req, res) => {
     
                                             }
                                             const hantu1 = arrayamhan[j].mean.split(",")[0];
-                                            amhan = amhan + hantu1
+                                            amhan = amhan + "" + hantu1
                                         }
                                     }
                                 }
