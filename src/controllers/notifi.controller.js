@@ -41,7 +41,7 @@ const kk=[];
 const getNotifi = async (req, res) => {
 
     const { user_id } = req.body;
-    const listNoti = await Notification.find({ user_id: user_id }).populate([{ path: 'dataWord' }, { path: 'dataGrammar' }, { path: 'dataKanji' }, { path: 'dataPost' }, { path: 'dataVocu' }, { path: 'dataRemind' }]);
+    const listNoti = await Notification.find({ user_id: user_id }).populate([{ path: 'dataWord' }, { path: 'dataGrammar' }, { path: 'dataKanji' }, { path: 'dataPost' }, { path: 'dataVocu' }, { path: 'dataRemind' }, {path: 'user_friends'}]);
     return res.json({ code: 1, listNoti: listNoti });
 }
 
@@ -132,8 +132,8 @@ const sendNotiToDeviceAssetAgain = async (req, res) => {
 }
 
 const sendNotiToDeviceAsset = async (req, res) => {
-    const { id, comment_content, action, noti, type, username, user_noti, notifi_token } = req.body;
-    console.log(id, comment_content, action, noti, type, username, user_noti, notifi_token);
+    const { id, comment_content, action, noti, type, user, user_noti, notifi_token } = req.body;
+    console.log(id, comment_content, action, noti, type, user, user_noti, notifi_token);
 
     var content = "";
 
@@ -172,14 +172,14 @@ const sendNotiToDeviceAsset = async (req, res) => {
     if (data) {
         if (type === "post") {
 
-            content = `${username} đã binhf luận ${noti} của bạn`;
+            content = `${user.username} đã binhf luận ${noti} của bạn`;
         }
         else {
-            content = `${username} đã ${action} ${noti} của bạn: ${comment_content}`;
+            content = `${user.username} đã ${action} ${noti} của bạn: ${comment_content}`;
         }
     }
     var time = new Date();
-    const newNotifi = new Notification({ user_id: user_noti, content, time, action, dataWord, dataGrammar, dataKanji, dataPost, dataVocu, dataRemind, typeNoti: type, isRead: false });
+    const newNotifi = new Notification({ user_id: user_noti, content, time, action, dataWord, dataGrammar, dataKanji, dataPost, dataVocu, dataRemind, typeNoti: type, isRead: false, user_friends: user });
     await newNotifi.save(function (err) {
         if (err) {
             console.log(err);
@@ -190,7 +190,7 @@ const sendNotiToDeviceAsset = async (req, res) => {
                 // "to": 'cVVGGz4rRCC7_hdLwmHh9K:APA91bG7ceBsLeF7rcziCVbQ0wyGQ0YHXrpVN6VxQVCrQTcxOANdHXsRe-vGguZcrD1c7ubM9wJsX93UhNgKMl5i7lWdVIT8kqcLeA7n28QTQjy2SIqhGdZwzQ4NZn9kKk5pzkNEhhnQ',
                 "to": notifi_token,
                 "notification": {
-                    "body": `${username} đã ${action} ${noti} của bạn: ${comment_content}`,
+                    "body": content,
                     "title": "language"
                 },
                 "data": {

@@ -48,6 +48,10 @@ const notificationSchema = mongoose.Schema({
     typeNoti: {
         type: String,
         require: true
+    },
+    user_friends: {
+       type: mongoose.Schema.Types.ObjectId,
+       ref: "user"
     }
 }); 
 

@@ -2458,7 +2458,7 @@ const runNotifi = async (req, res) => {
             cron.schedule(`0 ${minutes} ${hours} * * *`, async () => {
                 for(var i=0;i<ka.length;i++) {
                     var time = new Date();
-                    const newNotifi = new Notification({ user_id: user._id, content, time, action: "remind", dataWord: undefined, dataGrammar: undefined, dataKanji: undefined, dataPost: undefined, dataVocu: undefined, dataRemind: rs[i].dataRemind, typeNoti: "schedule", isRead: false });
+                    const newNotifi = new Notification({ user_id: user._id, content, time, action: "remind", dataWord: undefined, dataGrammar: undefined, dataKanji: undefined, dataPost: undefined, dataVocu: undefined, dataRemind: rs[i].dataRemind, typeNoti: "schedule", isRead: false, user_friends: user });
                     console.log(newNotifi);
                     console.log(rs[i].datakk);
                     const kk = rs[i].datakk;

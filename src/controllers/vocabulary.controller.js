@@ -164,7 +164,7 @@ const shareVocabulary = async (req, res) => {
                 const time = new Date();
                 
                 for (var i = 0; i < listUserShare.length; i++) {
-                    const newNotifi = new Notification({user_id: listUserShare[i]._id, content, time, action: "share",dataWord, dataGrammar,dataKanji, dataPost, dataVocu,dataRemind, typeNoti: "vocu",  isRead: false});
+                    const newNotifi = new Notification({user_id: listUserShare[i]._id, content, time, action: "share",dataWord, dataGrammar,dataKanji, dataPost, dataVocu,dataRemind, typeNoti: "vocu",  isRead: false, user_friends: users});
                     await newNotifi.save();
                     axios.post('https://fcm.googleapis.com/fcm/send', {
                         // "to": 'cVVGGz4rRCC7_hdLwmHh9K:APA91bG7ceBsLeF7rcziCVbQ0wyGQ0YHXrpVN6VxQVCrQTcxOANdHXsRe-vGguZcrD1c7ubM9wJsX93UhNgKMl5i7lWdVIT8kqcLeA7n28QTQjy2SIqhGdZwzQ4NZn9kKk5pzkNEhhnQ',
