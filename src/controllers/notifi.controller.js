@@ -172,10 +172,10 @@ const sendNotiToDeviceAsset = async (req, res) => {
     if (data) {
         if (type === "post") {
 
-            content = `${user.username} đã binhf luận ${noti} của bạn`;
+            content = `${user.username} đã bình luận bài viết của bạn`;
         }
         else {
-            content = `${user.username} đã ${action} ${noti} của bạn: ${comment_content}`;
+            content = `${user.username} đã bày tỏ cảm xúc về bình luận của bạn: ${comment_content}`;
         }
     }
     var time = new Date();
