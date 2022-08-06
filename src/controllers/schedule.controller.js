@@ -459,7 +459,7 @@ const suggesst1 = async (req, res) => {
     if (schedule.length !== 0) {
         return res.json({ code: 2, mess: 'Bạn đã thiết lập kế hoạch, vui lòng xóa kế hoạch cũ rồi thiết lập lại' });
     }
-    const timeLearn = 2.5;
+    const timeLearn = 2;
     var number;
     const n5word = 550//800;
     const n5grammar = 182;
