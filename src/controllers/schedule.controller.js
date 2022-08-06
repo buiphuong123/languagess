@@ -681,7 +681,8 @@ const suggesst1 = async (req, res) => {
             // console.log('1 NGÀY HK TONG CONG ', day);// tong so ngay hoc trình do 
             const wordNumber = ((listLevel[i].word) / day).toFixed() * 1;
             const grammarNumber = ((listLevel[i].grammar) / day).toFixed() * 1;
-            const kanjiNumber = ((listLevel[i].kanji) / day).toFixed() * 1;
+            const kanjiNumber = Math.ceil(((listLevel[i].kanji) / day));
+            
             const a = {};
             a.level = listLevel[i].level;
             a.word = wordNumber;
