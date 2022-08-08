@@ -429,7 +429,7 @@ const suggesst = async (req, res) => {
             listLevel.push(2);
         }
         else {
-            return res.json({ code: 0, mess: 'trình đọ nhập vào không hợp lệ' });
+            return res.json({ code: 0, mess: 'Trình độ nhập vào không hợp lệ' });
         }
     }
     if (time < timeEnd) {
@@ -666,7 +666,7 @@ const suggesst1 = async (req, res) => {
             listLevel.push(c);
         }
         else {
-            return res.json({ code: 0, mess: 'trình đọ nhập vào không hợp lệ, mục tiêu phải cao hơn trình độ hiện tại!!' });
+            return res.json({ code: 0, mess: 'Trình độ nhập vào không hợp lệ, mục tiêu phải cao hơn trình độ hiện tại!!' });
         }
     }
     if (time < timeEnd) {
