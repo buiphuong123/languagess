@@ -1174,7 +1174,7 @@ const startLearn = async (req, res) => {
     const year = date.getFullYear();
     var nameSchedule = "Học theo kế hoạch của app ";
     console.log(day, month, year);
-
+var check =0;
     for (var i = 0; i < result.length; i++) {
         console.log('LEVEL ', result[i].level);
         console.log('WORD NE');
@@ -1824,9 +1824,15 @@ const startLearn = async (req, res) => {
             date = datekanji;
             dategrammar = datekanji;
         }
+        if(j > result.length) {
+            check =1;
+        }
 
     }
-    return res.json({ code: 1 });
+    if(check ===1){
+        return res.json({ code: 1 });
+    }
+    
 }
 
 
