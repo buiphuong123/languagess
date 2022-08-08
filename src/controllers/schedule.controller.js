@@ -1824,6 +1824,8 @@ const startLearn = async (req, res) => {
             date = datekanji;
             dategrammar = datekanji;
         }
+        
+
     }
     return res.json({ code: 1 });
 }
