@@ -100,7 +100,13 @@ const getPost = async (req, res) => {
                     data[i].countlike = count.length;
                 }
                 // data.sort((a, b) => new Date(a.time) - new Date(b.time));
-                data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                data.sort(
+                    (a, b) => {
+                        var dateA = new Date(a.time);
+                        var dateB = new Date(b.time);
+                        return dateB.getHours() - dateA.getHours() && dateB.getMinutes() - dateA.getMinutes() && dateB - dateA;
+                    }
+                );
                 return res.json({ code: 1, postData: data });
             }
             forloop();
