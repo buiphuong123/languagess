@@ -33,10 +33,10 @@ const scheduleSchema = mongoose.Schema({
         type: Number,
         require: true
     },
-    // typetime: {
-    //     type: Number,
-    //     require: false,
-    // }
+    typetime: {
+        type: Number,
+        require: false,
+    }
 }); 
 
 const Schedule = mongoose.model("schedule", scheduleSchema);

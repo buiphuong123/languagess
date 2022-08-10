@@ -20,5 +20,6 @@ router.post('/runNotifi', scheduleController.runNotifi)
 
 router.post('/startLearnTest2', scheduleController.startLearnTest2)
 router.post('/startLearnkkk', scheduleController.startLearnkkk)
+router.get('/setValueSchedule', scheduleController.setValueSchedule)
 
 module.exports = router

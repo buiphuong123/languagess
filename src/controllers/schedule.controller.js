@@ -1217,7 +1217,7 @@ const startLearn = async (req, res) => {
                     console.log('save success', schedule.data);
                 }
                 else {
-                    const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                    const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: method, typetime: timenoti });
                     await schedule.save();
                     console.log('save success');
                 }
@@ -1250,7 +1250,7 @@ const startLearn = async (req, res) => {
                         console.log('save success', schedule.data);
                     }
                     else {
-                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: method });
+                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: method, typetime: timenoti });
                         await schedule.save();
                         console.log('save success');
                     }
@@ -1302,7 +1302,7 @@ const startLearn = async (req, res) => {
                         console.log('save success ', schedule.data);
                     }
                     else {
-                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: method, typetime: timenoti });
                         await schedule.save();
                         console.log('save success');
                     }
@@ -1334,7 +1334,7 @@ const startLearn = async (req, res) => {
                             console.log('save success', schedule.data);
                         }
                         else {
-                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: method, typetime: timenoti});
                             await schedule.save();
                             console.log('save success');
                         }
@@ -1370,7 +1370,7 @@ const startLearn = async (req, res) => {
                             console.log('save success', schedule.data);
                         }
                         else {
-                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: method, typetime: timenoti });
                             await schedule.save();
                             console.log('save success');
                         }
@@ -1424,7 +1424,7 @@ const startLearn = async (req, res) => {
                     console.log('save success', schedule.data);
                 }
                 else {
-                    const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                    const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: method, typetime: timenoti });
                     await schedule.save();
                     console.log('save success');
                 }
@@ -1454,7 +1454,7 @@ const startLearn = async (req, res) => {
                         console.log('save success', schedule.data);
                     }
                     else {
-                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: method, typetime: timenoti });
                         await schedule.save();
                         console.log('save success');
                     }
@@ -1506,7 +1506,7 @@ const startLearn = async (req, res) => {
                         console.log('save success ', schedule.data);
                     }
                     else {
-                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: method, typetime: timenoti });
                         await schedule.save();
                         console.log('save success');
                     }
@@ -1543,7 +1543,7 @@ const startLearn = async (req, res) => {
                             console.log('save success', schedule.data);
                         }
                         else {
-                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: method, typetime: timenoti });
                             await schedule.save();
                             console.log('save success');
                         }
@@ -1580,7 +1580,7 @@ const startLearn = async (req, res) => {
                             console.log('save success', schedule.data);
                         }
                         else {
-                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: method, typetime: timenoti });
                             await schedule.save();
                             console.log('save success');
                         }
@@ -1635,7 +1635,7 @@ const startLearn = async (req, res) => {
                     console.log('save success', schedule.data);
                 }
                 else {
-                    const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                    const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: method, typetime: timenoti });
                     await schedule.save();
                     console.log('save success');
                 }
@@ -1666,7 +1666,7 @@ const startLearn = async (req, res) => {
                         console.log('save success', schedule.data);
                     }
                     else {
-                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: method, typetime: timenoti });
                         await schedule.save();
                         console.log('save success');
                     }
@@ -1721,7 +1721,7 @@ const startLearn = async (req, res) => {
                         console.log('save success ', schedule.data);
                     }
                     else {
-                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                        const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: method, typetime: timenoti });
                         await schedule.save();
                         console.log('save success');
                     }
@@ -1756,7 +1756,7 @@ const startLearn = async (req, res) => {
                             console.log('save success', schedule.data);
                         }
                         else {
-                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: method, typetime: timenoti });
                             await schedule.save();
                             console.log('save success');
                         }
@@ -1794,7 +1794,7 @@ const startLearn = async (req, res) => {
                             console.log('save success', schedule.data);
                         }
                         else {
-                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: 1 });
+                            const schedule = new Schedule({ user_id, nameSchedule, data, date: dateeee, time: time, timenoti: notiTime, method: method, typetime: timenoti });
                             await schedule.save();
                             console.log('save success');
                         }
@@ -3266,7 +3266,17 @@ const runNotifi = async (req, res) => {
 
     // }
 }
+const setValueSchedule = async(req, res) => {
+    const sche = await Schedule.find();
+    for (var i=0;i<sche.length;i++) {
+        sche[i].typetime =1;
+        await sche[i].save();
+        console.log('save success');
+    }
+    console.log('hoan thanh');
+}
 module.exports = {
+    setValueSchedule,
     startLearnTest2,
     runNotifi,
     startLearnTest,
