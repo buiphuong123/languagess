@@ -99,6 +99,7 @@ const remind = async (req, res) => {
     var dataVocu = undefined;
     var dataRemind = undefined;
     var newschedule;
+    console.log('SO NGAY LA ',dates.length);
     for (var i = 0; i < dates.length; i++) {
         const dateeee = dates[i].getFullYear() + '-' + fixDigit(dates[i].getMonth() + 1) + '-' + fixDigit(dates[i].getDate());
         console.log(dateeee);
@@ -106,9 +107,10 @@ const remind = async (req, res) => {
         await newschedule.save();
         // dataRemind = newschedule._id;
         console.log('create success');
-        return res.json({code: 1})
+       
         // console.log(fixDigit(dates[i].getFullYear() + '-' + fixDigit(dates[i].getMonth() + 1) + '-' + dates[i].getDate());
     }
+    return res.json({code: 1});
     // if (check >= from && check <= to) {
     //     console.log('VAO DAY DANG CHAY NE', user);
     //     cron.schedule(`0 ${minutes} ${hours} * * *`, async () => {
