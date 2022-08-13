@@ -144,36 +144,7 @@ const sendNotiToDeviceAsset = async (req, res) => {
     var dataVocu = undefined;
     var dataRemind = undefined;
     var data = {};
-    if(action==="accept") {
-        if (type === "word") {
-            data = await Word.findOne({ _id: id });
-            if (data) {
-                dataWord = id;
-                content = `Quản trị viên đã chấp nhận bình luận của bạn`;
-            }
-        }
-        else if (type === "grammar") {
-            data = await Grammar.findOne({ _id: id });
-            if (data) {
-                dataGrammar = id;
-                content = `Quản trị viên đã chấp nhận bình luận của bạn`;
-            }
-        }
-        else if (type === "kanji") {
-            data = await Kanji.findOne({ _id: id });
-            if (data) {
-                dataKanji = id;
-                content = `Quản trị viên đã chấp nhận bình luận của bạn`;
-            }
-        }
-        else {
-            data = await Post.findOne({ _id: id });
-            if (data) {
-                dataPost = id;
-                content = `Quản trị viên đã chấp nhận bài viết của bạn`;
-            }
-        }
-    }
+   
     if (type === "word") {
         data = await Word.findOne({ _id: id });
         if (data) {
@@ -204,8 +175,17 @@ const sendNotiToDeviceAsset = async (req, res) => {
 
             content = `${user.username} đã bình luận bài viết của bạn`;
         }
+        
         else {
             content = `${user.username} đã bày tỏ cảm xúc về bình luận của bạn: ${comment_content}`;
+        }
+        if(action==="accept") {
+            if(type === "post"){
+                content = `Quản trị viên đã chấp nhận bài viết của bạn`;
+            }
+            else {
+                content = `Quản trị viên đã chấp nhận bài viết của bạn`;
+            }
         }
     }
     var time = new Date();
