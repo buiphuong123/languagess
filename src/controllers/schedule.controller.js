@@ -3164,13 +3164,13 @@ const runNotifi = async (req, res) => {
                             })
                                 .then(() => {
                                     console.log('Notification send successfully');
-                                    return res.json({mess: 'ok gui nhe'});
+                                    // return res.json({mess: 'ok gui nhe'});
                                     // kaka++;
                                     
                                 }).catch((err) => {
                                     // res.status(400).send('somethinh went wrongy');
                                     console.log(err);
-                                    return res.json('loi ne');
+                                    // return res.json('loi ne');
                                 }
                                 )
                             }

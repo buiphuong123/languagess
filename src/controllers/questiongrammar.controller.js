@@ -185,17 +185,19 @@ const getAllQuestionGrammar = async(req, res) => {
    return res.json({question: question});
 }
 const checkQuestionGrammar = async(req, res) => {
-    const question = await QuestionGrammar.find().populate("data");
+    const question = await QuestionGrammar.find({level: 3});
     for (var i=0;i<question.length; i++) {
         const questionss= question[i].question.slice(1).slice(1);
         question[i].question = questionss;
+        // console.log(questionss);
         await question[i].save();
+        // return res.json(questionss);
     }
    return res.json({mess: 'ket thuc'});
 }
 
 const questionReset = async(req, res) => {
-    const question = await QuestionGrammar.find();
+    const question = await QuestionGrammar.find({level: 3});
     for (i=0;i<question.length;i++) {
         const ans =question[i].listAns; 
        for(j=0;j<ans.length;j++) {

@@ -107,7 +107,7 @@ const signUp = async (req, res) => {
                     return res.json({ err });
                 }
                 console.log('SEND MAIL SUCCESS');
-                return res.json({ code: 1, success: 'A verification email has been sent to ' + newUser.email + '. It will be expire after one day. If you not get verification Email click on resend token.' });
+                return res.json({ code: 1, success: 'Một email xác thực đã được gửi tới ' + newUser.email + '. Bạn hãy vào xác nhận email' });
             });
 
         });
@@ -418,15 +418,15 @@ const ChangPasswordUser = async(req, res) => {
             user.password = hashedPassword;
             await user.save(function(error) {
                 if(error) {
-                    return res.json({code: 0, mess: 'change pass error'});
+                    return res.json({code: 0, mess: 'Có một số lỗi xảy ra!!!'});
                 }
                 else {
-                    return res.json({code: 1, mess: 'change pass sucess', user: user });
+                    return res.json({code: 1, mess: 'Thay đổi mật khẩu thành công', user: user });
                 }
             })
         }
         else {
-            return res.json({code: 0, mess: 'password fail'});
+            return res.json({code: 0, mess: 'Bạn nhập sai mật khẩu'});
         }
     }
 }

@@ -144,6 +144,14 @@ const sendNotiToDeviceAsset = async (req, res) => {
     var dataVocu = undefined;
     var dataRemind = undefined;
     var data = {};
+    if(action==="accept") {
+        if(type === "post"){
+            content = `Quản trị viên đã chấp nhận bài viết của bạn`;
+        }
+        else {
+            content = `Quản trị viên đã chấp nhận bài viết của bạn`;
+        }
+    }
     if (type === "word") {
         data = await Word.findOne({ _id: id });
         if (data) {
