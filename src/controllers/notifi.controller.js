@@ -145,11 +145,33 @@ const sendNotiToDeviceAsset = async (req, res) => {
     var dataRemind = undefined;
     var data = {};
     if(action==="accept") {
-        if(type === "post"){
-            content = `Quản trị viên đã chấp nhận bài viết của bạn`;
+        if (type === "word") {
+            data = await Word.findOne({ _id: id });
+            if (data) {
+                dataWord = id;
+                content = `Quản trị viên đã chấp nhận bình luận của bạn`;
+            }
+        }
+        else if (type === "grammar") {
+            data = await Grammar.findOne({ _id: id });
+            if (data) {
+                dataGrammar = id;
+                content = `Quản trị viên đã chấp nhận bình luận của bạn`;
+            }
+        }
+        else if (type === "kanji") {
+            data = await Kanji.findOne({ _id: id });
+            if (data) {
+                dataKanji = id;
+                content = `Quản trị viên đã chấp nhận bình luận của bạn`;
+            }
         }
         else {
-            content = `Quản trị viên đã chấp nhận bài viết của bạn`;
+            data = await Post.findOne({ _id: id });
+            if (data) {
+                dataPost = id;
+                content = `Quản trị viên đã chấp nhận bài viết của bạn`;
+            }
         }
     }
     if (type === "word") {
