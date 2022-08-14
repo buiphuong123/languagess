@@ -139,7 +139,8 @@ const editWordNew = async(req, res) => {
 
 }
 const getWord = async (req, res) => {
-    var { id } = req.body;
+    console.log('vao get word');
+    var { id } = req.body;  
     Word.aggregate([
         {
             $lookup: {
