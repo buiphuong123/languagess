@@ -201,7 +201,7 @@ const getWord = async (req, res) => {
         if (err) {
             res.json({ code: 0, errMsg: err });
         } else {
-            console.log('data ne ', data);
+            console.log('co e data ne ');
             res.json({ code: 1, wordData: data });
         }
     })
