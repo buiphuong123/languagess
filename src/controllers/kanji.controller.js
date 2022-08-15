@@ -44,7 +44,12 @@ const editKanjiNew = async(req, res) => {
         })
     }
 }
+const getKanjiTest = async(req, res) => {
+    const kanji = await Kanji.find();
+    return res.json(kanji);
+}
 const getKanji = async (req, res) => {
+    console.log('vao get kanji ');
     var { id } = req.body;
     Kanji.aggregate([
         {
@@ -573,6 +578,7 @@ const refuseCommentKanji = async(req, res) => {
 //     const kanji = await Kanji.find({})
 // }
 module.exports = {
+    getKanjiTest,
     createKanjiNew,
     editKanjiNew,
     countLevelKanji,

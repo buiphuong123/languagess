@@ -22,5 +22,6 @@ router.get('/countLevelKanji', kanjiController.countLevelKanji)
 
 router.post('/createKanjiNew', kanjiController.createKanjiNew)
 router.post('/editKanjiNew', kanjiController.editKanjiNew)
+router.get('/getKanjiTest', kanjiController.getKanjiTest)
 
 module.exports = router
