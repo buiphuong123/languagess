@@ -199,10 +199,10 @@ const getWord = async (req, res) => {
         },
     ], function (err, data) {
         if (err) {
-            res.json({ code: 0, errMsg: err });
+            return res.json({ code: 0, errMsg: err });
         } else {
             console.log('co e data ne ');
-            res.json({ code: 1, wordData: data });
+            return res.json({ code: 1, wordData: data });
         }
     })
 
